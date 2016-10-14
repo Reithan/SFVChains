@@ -42,24 +42,24 @@ struct Ibuki : public iCharacter {
 		_moves.push_back(MoveData("VT"								,1	,0	,0	,0	,0	,100	,100, MoveData::kMVT_VT, NULL));
 		_moves.push_back(MoveData("VS"								,15	,-5	,85,	0,	0,	60,	100	, MoveData::kMVT_VS | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
 		_moves.push_back(MoveData("VS HOLD"							,25	,-2, 87,	0,	0,	80, 150	, MoveData::kMVT_VS | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
-		_moves.push_back(MoveData("VR"								,15 ,-2, 88,	0,	0,	60,	0	, MoveData::kMVT_KnockDown | MoveData::kMVT_VS, NULL));
+		_moves.push_back(MoveData("VR"								,15 ,-2, 88,	0,	0,	60,	0	, MoveData::kMVT_KnockDown | MoveData::kMVT_VR, NULL));
 		_moves.push_back(MoveData("Kasumigake LK"					,3	,-21,	-21, 0, 0, 0, 0, MoveData::kMVT_Special | MoveData::kMVT_Dash, NULL));
 		_moves.push_back(MoveData("Kasumigake MK"					,3	,-23,	-23, 0, 0, 0, 0, MoveData::kMVT_Special | MoveData::kMVT_Dash, NULL));
-		_moves.push_back(MoveData("Kasumigake HK"					,7	,-57,	-57, 0, 0, 0, 0, MoveData::kMVT_Special | MoveData::kMVT_Dash | MoveData::kMVT_Air, MoveData::kMVT_Air | MoveData::kMVT_AirThrow));
+		_moves.push_back(MoveData("Kasumigake HK"					,7	,-57,	-57, 0, 0, 0, 0, MoveData::kMVT_Special | MoveData::kMVT_Dash | MoveData::kMVT_Jump, MoveData::kMVT_Air | MoveData::kMVT_AirThrow));
 		_moves.push_back(MoveData("Kazekiri LK"						,3  ,-27,	81,	0,	0,	120,	150, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, MoveData::kMVT_CA));
 		_moves.push_back(MoveData("Kazekiri MK"						,4  ,-27,	81,	0,	0,	120,	150, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, MoveData::kMVT_CA));
 		_moves.push_back(MoveData("Kazekiri HK"						,5  ,-27,	81,	0,	0,	120,	150, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, MoveData::kMVT_CA));
-		_moves.push_back(MoveData("Kazekiri EX"						,4  ,-27,	85,	0,	0,	120,	150, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_EX | MoveData::kMVT_KnockBack, MoveData::kMVT_CA | MoveData::kMVT_Air));
+		_moves.push_back(MoveData("Kazekiri EX"						,4  ,-27,	85,	0,	0,	120,	150, MoveData::kMVT_Special | MoveData::kMVT_Jump | MoveData::kMVT_KnockDown | MoveData::kMVT_EX | MoveData::kMVT_KnockBack, MoveData::kMVT_CA | MoveData::kMVT_Air));
 		_moves.push_back(MoveData("Raida LP"						,7  ,-12,	79,	0,	0,	100,	200, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
 		_moves.push_back(MoveData("Raida MP"						,7  ,-12,	77,	0,	0,	110,	200, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
 		_moves.push_back(MoveData("Raida HP"						,7  ,-12,	79,	0,	0,	120,	200, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
 		_moves.push_back(MoveData("Raida EX"						,7  ,-11,	79,	0,	0,	150,	200, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_EX | MoveData::kMVT_KnockBack, NULL));
-		_moves.push_back(MoveData("Kunai P"						,7	,-2,	2,	8, 11, 40	,50	, MoveData::kMVT_Special, MoveData::kMVT_CA));
-		_moves.push_back(MoveData("Kunai EX"						,7	,18,	110,	18, 110, 60	,100, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_EX | MoveData::kMVT_KnockBack, NULL));
-		_moves.push_back(MoveData("Airborne Kunai P"				,7	,13,	17,	0,	0,	40,	50	, MoveData::kMVT_Special | MoveData::kMVT_Air, NULL));
-		_moves.push_back(MoveData("Airborne Kunai EX"				,7	,24,	22,	0,	0,	70,	100	, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_Air | MoveData::kMVT_KnockBack, NULL));
-		_moves.push_back(MoveData("Kunai Ikkinage P"				,11	,9	,110,	0,	0,	150,	150	, MoveData::kMVT_KnockDown | MoveData::kMVT_Special, MoveData::kMVT_CA));
-		_moves.push_back(MoveData("Airborne Kunai Ikkinage K"		,16	,0	,0,	0,	0,	150,	150	, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_Air, NULL));
+		_moves.push_back(MoveData("Kunai P"						,7	,-2,	2,	8, 11, 40	,50	, MoveData::kMVT_Special | MoveData::kMVT_Projectile, MoveData::kMVT_CA));
+		_moves.push_back(MoveData("Kunai EX"						,7	,18,	110,	18, 110, 60	,100, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_EX | MoveData::kMVT_KnockBack | MoveData::kMVT_Projectile, NULL));
+		_moves.push_back(MoveData("Airborne Kunai P"				,7	,13,	17,	0,	0,	40,	50	, MoveData::kMVT_Special | MoveData::kMVT_Air | MoveData::kMVT_Projectile, NULL));
+		_moves.push_back(MoveData("Airborne Kunai EX"				,7	,24,	22,	0,	0,	70,	100	, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_Air | MoveData::kMVT_KnockBack | MoveData::kMVT_Projectile, NULL));
+		_moves.push_back(MoveData("Kunai Ikkinage P"				,11	,9	,110,	0,	0,	150,	150	, MoveData::kMVT_KnockDown | MoveData::kMVT_Special | MoveData::kMVT_Projectile, MoveData::kMVT_CA));
+		_moves.push_back(MoveData("Airborne Kunai Ikkinage K"		,16	,0	,0,	0,	0,	150,	150	, MoveData::kMVT_Special | MoveData::kMVT_KnockDown | MoveData::kMVT_Air | MoveData::kMVT_Projectile, NULL));
 		_moves.push_back(MoveData("Kunai Hoju K 1"					,11	,-54	,-54,	0,	0,	0,	0	, MoveData::kMVT_Special, NULL));
 		_moves.push_back(MoveData("Kunai Hoju K 2"					,24	,-74	,-74,	0,	0,	0,	0	, MoveData::kMVT_Special, NULL));
 		_moves.push_back(MoveData("Kunai Hoju K 3"					,36	,-82	,-82,	0,	0,	0,	0	, MoveData::kMVT_Special, NULL));
@@ -71,13 +71,35 @@ struct Ibuki : public iCharacter {
 
 	virtual bool isValidCombo(const Combo& combo) const {
 		int kunai = 6;
-		for (auto i = combo.begin(); i != combo.end(); ++i)
+		for (auto i = combo.begin(); i != combo.end(); ++i){
+			// check kunai inventory
 			if (i->name.find("Ikkinage") != i->name.npos)
 				kunai = 0;
 			else if (i->name.find("Hoju") != i->name.npos)
 				kunai = min(6, kunai + i->name.back() - '0');
 			else if (i->name.find("Kunai") != i->name.npos)
 				--kunai;
+			// check VT stock
+			// check Bomb Timing stock
+			// check Dash Spacing stock
+			if(i != combo.begin()){
+				const std::string& name = std::prev(i)->name;
+				if(name == "Raida EX" || name == "Kunai EX" || name == "Kazekiri EX"){
+					if(i->name == "Kasumigake LK")
+						return false;
+					if(i->name == "Kasumigake HK" && name == "Kunai EX")
+						return false;
+				}
+				else if(name.find("Raida") != name.npos){
+					if(i->name == "Kasumigake LK")
+						return false;
+				}
+				else if(name.find("Kazekiri") != name.npos){
+					if(i->name == "Kasumigake HK")
+						return false;
+				}
+			}
+		}
 		return kunai >= 0;
 	};
 };
