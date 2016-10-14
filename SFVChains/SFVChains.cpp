@@ -26,9 +26,9 @@ void pauseConsole() {
 	cin.get();
 }
 
-void GenerateHitConfirms(queue<iCharacter::Combo>& confirm_combos_final, iCharacter* fighter){
+void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter* fighter){
 	clearConsole(true);
-	queue<iCharacter::Combo> confirm_combos_working;
+	iCharacter::ComboList confirm_combos_working;
 	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
 		if (i->blockAdv() > -3 &&
 				!i->isKnockDown()) {
@@ -71,9 +71,9 @@ void GenerateHitConfirms(queue<iCharacter::Combo>& confirm_combos_final, iCharac
 	}
 }
 
-void GenerateBasicCombos(queue<iCharacter::Combo>& basic_combos_final, iCharacter* fighter){
+void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* fighter){
 	clearConsole(true);
-	queue<iCharacter::Combo> basic_combos_working;
+	iCharacter::ComboList basic_combos_working;
 	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
 		if ((i->hitAdv() > 2 &&
 				!i->isKnockDown()) ||
@@ -189,56 +189,8 @@ void GenerateBasicCombos(queue<iCharacter::Combo>& basic_combos_final, iCharacte
 	}
 }
 
-int main()
-{
-	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-	CONSOLE_CURSOR_INFO lpCursor;
-	lpCursor.bVisible = false;
-	lpCursor.dwSize = 20; //default size
-	SetConsoleCursorInfo(console, &lpCursor);
-
-	Ibuki ninja;
-
-	// Generate Hit Confirms
-	queue<iCharacter::Combo> confirm_combos;
-	GenerateHitConfirms(confirm_combos, &ninja);
-
-	// Generate Basic Combos
-	queue<iCharacter::Combo> basic_combos;
-	GenerateBasicCombos(basic_combos, &ninja);
-
-	// Generate VTC Combos
-
-	// Generate Combos into CA
-
-	// Generate Confirmed Combos
-
-	// Print Results
-	cout << "==Hit Confirm Strings < 5 Moves==\n";
-	int count = 0;
-	for (auto *i = &confirm_combos.front(); !confirm_combos.empty(); i = &confirm_combos.front()) {
-		const MoveData* last_move;
-		for (auto j = i->begin(); j != i->end(); ++j) {
-			if (j != i->begin()) {
-				if (last_move->canCancelInto(**j))
-					cout << " xx ";
-				else if (last_move->blockAdv() < (*j)->startup)
-					cout << " [FT] ";
-				else
-					cout << ", ";
-			}
-			cout << (*j)->name;
-			last_move = *j;
-		}
-		cout << endl;
-		if (++count % 50 == 0) {
-			pauseConsole();
-			clearConsole();
-		}
-		confirm_combos.pop();
-	}
-	cout << "\n\n==Basic Combos==\n";
-	for (auto* i = &basic_combos.front(); !basic_combos.empty(); i = &basic_combos.front()) {
+void outputComboList(iCharacter::ComboList combos) {
+	for (auto* i = &combos.front(); !combos.empty(); i = &combos.front()) {
 		const MoveData* last_move;
 		int damage = 0, stun = 0;
 		float scaling = 1.0f;
@@ -266,11 +218,11 @@ int main()
 				cout << " - Stun";
 			else if (stun > 900)
 				cout << " - Possible Stun";
-			if(last_move->isReset() && (++*(i->rbegin()))->isKnockDown())
+			if (last_move->isReset() && (++*(i->rbegin()))->isKnockDown())
 				cout << " - Vortex";
-			else if(last_move->hasType(MoveData::kMVT_HardKnockDown))
+			else if (last_move->hasType(MoveData::kMVT_HardKnockDown))
 				cout << " - Hard Knockdown";
-			else if(last_move->isKnockDown())
+			else if (last_move->isKnockDown())
 				cout << " - Knockdown";
 		}
 		cout << endl;
@@ -278,8 +230,38 @@ int main()
 			pauseConsole();
 			clearConsole();
 		}
-		basic_combos.pop();
+		combos.pop();
 	}
 	pauseConsole();
+}
+int main()
+{
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO lpCursor;
+	lpCursor.bVisible = false;
+	lpCursor.dwSize = 20; //default size
+	SetConsoleCursorInfo(console, &lpCursor);
+
+	Ibuki ninja;
+
+	// Generate Hit Confirms
+	iCharacter::ComboList confirm_combos;
+	GenerateHitConfirms(confirm_combos, &ninja);
+
+	// Generate Basic Combos
+	iCharacter::ComboList basic_combos;
+	GenerateBasicCombos(basic_combos, &ninja);
+
+	// Generate VTC Combos
+
+	// Generate Combos into CA
+
+	// Generate Confirmed Combos
+
+	// Print Results
+	cout << "==Hit Confirm Strings < 5 Moves==\n";
+	outputComboList(confirm_combos);
+	cout << "\n\n==Basic Combos==\n";
+	outputComboList(basic_combos);
 	return 0;
 }
