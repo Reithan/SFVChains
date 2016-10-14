@@ -5,8 +5,29 @@
 #include "Ibuki.h"
 
 using namespace std;
+void clearConsole(bool clear = false) {
+	HANDLE hOut;
+	COORD Position;
+	DWORD Written;
+
+	hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+
+	Position.X = 0;
+	Position.Y = 0;
+	if(clear)
+		FillConsoleOutputCharacter(hOut, ' ', 1000000, Position, &Written);
+
+	SetConsoleCursorPosition(hOut, Position);
+}
+
+void pauseConsole() {
+	while (cin.peek() > 0)
+		cin.ignore();
+	cin.get();
+}
 
 void GenerateHitConfirms(queue<iCharacter::Combo>& confirm_combos_final, iCharacter* fighter){
+	clearConsole(true);
 	queue<iCharacter::Combo> confirm_combos_working;
 	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
 		if (i->blockAdv() > -3 &&
@@ -22,13 +43,14 @@ void GenerateHitConfirms(queue<iCharacter::Combo>& confirm_combos_final, iCharac
 				confirm_combos_final.push(temp);
 		}
 	}
-	for (auto* i = &confirm_combos_working.front(); !confirm_combos_working.empty();){
-		system("cls");
-		cout << "Seed combos in queue: " << confirm_combos_working.size() << '\n';
+	for (auto* i = &confirm_combos_working.front(); !confirm_combos_working.empty(); i = &confirm_combos_final.front()){
+		clearConsole();
+		cout << "==Confirm Combos Processing==\nSeed combos in queue:\t" << confirm_combos_working.size() << "\nFinal combos:\t" << confirm_combos_final.size() << '\n';;
 		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
 			if (((j->hasType(MoveData::kMVT_Air)) == 0 || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
 					((i->back()->hasType(MoveData::kMVT_KnockBack)) == 0 || j->hasType(MoveData::kMVT_Dash)) &&
 					!j->isWhiffable() &&
+					j->notType(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
 					(i->back()->blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap || i->back()->canCancelInto(*j)) &&
 					!j->isKnockDown() &&
 					!j->hasType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow)) {
@@ -46,11 +68,11 @@ void GenerateHitConfirms(queue<iCharacter::Combo>& confirm_combos_final, iCharac
 		if (fighter->isValidCombo(*i) && (i->size() > 2 || i->back()->hasType(MoveData::kMVT_TargetCombo)) && i->back()->blockAdv() > -3 && (i->back()->hitAdv(MoveData::kHAT_Raw) > 2 || i->back()->canCancel()))
 			confirm_combos_final.push(*i);
 		confirm_combos_working.pop();
-		i = &confirm_combos_final.front();
 	}
 }
 
 void GenerateBasicCombos(queue<iCharacter::Combo>& basic_combos_final, iCharacter* fighter){
+	clearConsole(true);
 	queue<iCharacter::Combo> basic_combos_working;
 	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
 		if ((i->hitAdv() > 2 &&
@@ -62,15 +84,15 @@ void GenerateBasicCombos(queue<iCharacter::Combo>& basic_combos_final, iCharacte
 				basic_combos_working.push(temp);
 		}
 	}
-	for (auto* i = &basic_combos_working.front(); !basic_combos_working.empty();){
-		system("cls");
-		cout << "Seed combos in queue: " << basic_combos_working.size() << '\n';
+	for (auto* i = &basic_combos_working.front(); !basic_combos_working.empty(); i = &basic_combos_working.front()){
+		clearConsole();
+		cout << "==Basic Combos Processing==\nSeed combos in queue:\t" << basic_combos_working.size() << "\nFinal combos:\t" << basic_combos_final.size() << '\n';
 		bool added = false;
 		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
 			if ((j->notType(MoveData::kMVT_Air) || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
 					(i->back()->notType(MoveData::kMVT_KnockBack) || (i->back()->hasType(MoveData::kMVT_KnockBack) && j->hasType(MoveData::kMVT_Dash | MoveData::kMVT_Projectile))) &&
 					(i->back()->notType(MoveData::kMVT_Jump) || (i->back()->hasType(MoveData::kMVT_Jump) && j->hasType(MoveData::kMVT_Air))) &&
-					j->notType(MoveData::kMVT_VT | MoveData::kMVT_VT | MoveData::kMVT_CA) &&
+					j->notType(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
 					(i->back()->canCancelInto(*j) || 
 					((j->notType(MoveData::kMVT_Dash) || (j->hasType(MoveData::kMVT_Dash) && i->back()->hitAdv() + j->hitAdv() + j->startup > 2)) &&
 						((i->back()->notType(MoveData::kMVT_Dash) && i->back()->hitAdv() >= j->startup) ||
@@ -164,12 +186,17 @@ void GenerateBasicCombos(queue<iCharacter::Combo>& basic_combos_final, iCharacte
 				basic_combos_final.push(*i);
 		}
 		basic_combos_working.pop();
-		i = &basic_combos_working.front();
 	}
 }
 
 int main()
 {
+	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_CURSOR_INFO lpCursor;
+	lpCursor.bVisible = false;
+	lpCursor.dwSize = 20; //default size
+	SetConsoleCursorInfo(console, &lpCursor);
+
 	Ibuki ninja;
 
 	// Generate Hit Confirms
@@ -205,8 +232,8 @@ int main()
 		}
 		cout << endl;
 		if (++count % 50 == 0) {
-			system("pause");
-			system("cls");
+			pauseConsole();
+			clearConsole();
 		}
 		confirm_combos.pop();
 	}
@@ -248,11 +275,11 @@ int main()
 		}
 		cout << endl;
 		if (++count % 50 == 0) {
-			system("pause");
-			system("cls");
+			pauseConsole();
+			clearConsole();
 		}
 		basic_combos.pop();
 	}
-	system("pause");
+	pauseConsole();
 	return 0;
 }
