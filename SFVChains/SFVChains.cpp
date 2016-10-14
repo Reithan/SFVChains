@@ -190,6 +190,7 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 }
 
 void outputComboList(iCharacter::ComboList combos) {
+	int count = 0;
 	for (auto* i = &combos.front(); !combos.empty(); i = &combos.front()) {
 		const MoveData* last_move;
 		int damage = 0, stun = 0;

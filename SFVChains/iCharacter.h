@@ -3,7 +3,7 @@
 
 struct iCharacter {
 	typedef std::list<const MoveData*> Combo;
-	typedef queue<iCharacter::Combo> ComboList;
+	typedef std::queue<iCharacter::Combo> ComboList;
 	std::vector<MoveData> _moves;
 	iCharacter() {}
 	virtual ~iCharacter() {}
