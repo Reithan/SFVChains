@@ -197,7 +197,7 @@ int main()
 	// Print Results
 	cout << "==Hit Confirm Strings < 5 Moves==\n";
 	int count = 0;
-	/*for (auto i = confirm_combos_final.begin(); i != confirm_combos_final.end(); ++i) {
+	for (auto i = confirm_combos.begin(); i != confirm_combos.end(); ++i) {
 		MoveData last_move;
 		for (auto j = i->begin(); j != i->end(); ++j) {
 			if (j != i->begin()) {
@@ -216,7 +216,7 @@ int main()
 			system("pause");
 			system("cls");
 		}
-	}*/
+	}
 	cout << "\n\n==Basic Combos==\n";
 	for (auto i = basic_combos.begin(); i != basic_combos.end(); ++i) {
 		MoveData last_move;
