@@ -16,7 +16,8 @@
 #include <set>
 #include <queue>
 #define WIN32_LEAN_AND_MEAN
+#define NOMINMAX
 #include <Windows.h>
 
-#define min(a,b) (((a) < (b))?(a):(b))
-#define max(a,b) (((a) > (b))?(a):(b))
+#define MIN(a,b) (((a) < (b))?(a):(b))
+#define MAX(a,b) (((a) > (b))?(a):(b))

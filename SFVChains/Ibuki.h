@@ -76,11 +76,11 @@ struct Ibuki : public iCharacter {
 			if ((*i)->name.find("Ikkinage") != (*i)->name.npos)
 				kunai = 0;
 			else if ((*i)->name.find("Hoju") != (*i)->name.npos)
-				kunai = min(6, kunai + (*i)->name.back() - '0');
+				kunai = MIN(6, kunai + (*i)->name.back() - '0');
 			else if ((*i)->name.find("Kunai") != (*i)->name.npos)
 				--kunai;
 			// check VT stock
-			// check Bomb Timing stock
+			// check Bomb TiMINg stock
 			// check Dash Spacing stock
 			if(i != combo.begin()){
 				const std::string& name = (*std::prev(i))->name;

@@ -21,9 +21,9 @@ void clearConsole(bool clear = false) {
 }
 
 void pauseConsole() {
-	while (cin.peek() > 0)
-		cin.ignore();
-	cin.get();
+	cin.clear();
+	cin.sync();
+	cin.ignore();
 }
 
 void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter* fighter){
@@ -57,6 +57,34 @@ void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter
 				iCharacter::Combo temp = *i;
 				temp.push_back(&*j);
 				if(fighter->isValidCombo(temp)){
+					int push = 0, EX = 3;
+					for (auto k = temp.begin(); EX >= 0 && k != temp.end(); ++k) {
+						if ((*k)->hasType(MoveData::kMVT_EX))
+							--EX;
+						if ((*k)->hasType(MoveData::kMVT_TargetCombo)) {
+							string::size_type start = -1;
+							while ((start = (*k)->name.find("L", ++start)) != (*k)->name.npos)
+								push += 2;
+							start = 0;
+							while ((start = (*k)->name.find("M", ++start)) != (*k)->name.npos)
+								push += 3;
+							start = 0;
+							while ((start = (*k)->name.find("H", ++start)) != (*k)->name.npos)
+								push = 0;
+						}
+						else if ((*k)->hasType(MoveData::kMVT_Basic)) {
+							if ((*k)->name.find("L") != (*k)->name.npos)
+								push += 2;
+							if ((*k)->name.find("M") != (*k)->name.npos)
+								push += 3;
+							if ((*k)->name.find("H") != (*k)->name.npos)
+								push -= 1;
+						}
+						else
+							push = 0;
+					}
+					if (push > 3)
+						continue;
 					if (temp.size() < 4)
 						confirm_combos_working.push(temp);
 					else if ((*j).blockAdv() > -3 && ((*j).hitAdv(MoveData::kHAT_Raw) > 2 || (*j).canCancel())) {
@@ -65,7 +93,31 @@ void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter
 				}
 			}
 		}
-		if (fighter->isValidCombo(*i) && (i->size() > 2 || i->back()->hasType(MoveData::kMVT_TargetCombo)) && i->back()->blockAdv() > -3 && (i->back()->hitAdv(MoveData::kHAT_Raw) > 2 || i->back()->canCancel()))
+		int push = 0;
+		for (auto k = i->begin(); k != i->end(); ++k) {
+			if ((*k)->hasType(MoveData::kMVT_TargetCombo)) {
+				string::size_type start = -1;
+				while ((start = (*k)->name.find("L", ++start)) != (*k)->name.npos)
+					push += 2;
+				start = 0;
+				while ((start = (*k)->name.find("M", ++start)) != (*k)->name.npos)
+					push += 3;
+				start = 0;
+				while ((start = (*k)->name.find("H", ++start)) != (*k)->name.npos)
+					push = 0;
+			}
+			else if ((*k)->hasType(MoveData::kMVT_Basic)) {
+				if ((*k)->name.find("L") != (*k)->name.npos)
+					push += 2;
+				if ((*k)->name.find("M") != (*k)->name.npos)
+					push += 3;
+				if ((*k)->name.find("H") != (*k)->name.npos)
+					push -= 1;
+			}
+			else
+				push = 0;
+		}
+		if (push < 4 && fighter->isValidCombo(*i) && (i->size() > 2 || i->back()->hasType(MoveData::kMVT_TargetCombo)) && i->back()->blockAdv() > -3 && (i->back()->hitAdv(MoveData::kHAT_Raw) > 2 || i->back()->canCancel()))
 			confirm_combos_final.push(*i);
 		confirm_combos_working.pop();
 	}
@@ -118,7 +170,7 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 								push += 3;
 							start = 0;
 							while((start = (*k)->name.find("H",++start)) != (*k)->name.npos)
-								push += 4;
+								push = 0;
 						}
 						else if((*k)->hasType(MoveData::kMVT_Basic)){
 							if((*k)->name.find("L") != (*k)->name.npos)
@@ -126,12 +178,12 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 							if((*k)->name.find("M") != (*k)->name.npos)
 								push += 3;
 							if((*k)->name.find("H") != (*k)->name.npos)
-								push += 4;
+								push -= 1;
 						}
 						else
 							push = 0;
 					}
-					if(push >= 9 || EX < 0)
+					if(push > 3 || EX < 0)
 						continue;
 					if (scaling > 0.0f && damage < 250 && stun < 900 && 
 						(temp.size() > 1 && (j->notType(MoveData::kMVT_Dash) || 
@@ -164,7 +216,7 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 						push += 3;
 					start = 0;
 					while((start = (*k)->name.find("H",++start)) != (*k)->name.npos)
-						push += 4;
+						push = 0;
 				}
 				else if((*k)->hasType(MoveData::kMVT_Basic)){
 					if((*k)->name.find("L") != (*k)->name.npos)
@@ -172,12 +224,12 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 					if((*k)->name.find("M") != (*k)->name.npos)
 						push += 3;
 					if((*k)->name.find("H") != (*k)->name.npos)
-						push += 4;
+						push -= 1;
 				}
 				else
 					push = 0;
 			}
-			if (i->size() > 1 && !added && ((damage >= 250 || stun >= 900 || i->back()->isKnockDown() ||
+			if (push < 4 && i->size() > 1 && !added && ((damage >= 250 || stun >= 900 || i->back()->isKnockDown() ||
 							((++*(i->rbegin()))->isKnockDown() && i->back()->isReset())) &&
 							(
 								(i->back()->notType(MoveData::kMVT_Dash) ||
@@ -248,10 +300,14 @@ int main()
 	// Generate Hit Confirms
 	iCharacter::ComboList confirm_combos;
 	GenerateHitConfirms(confirm_combos, &ninja);
+	pauseConsole();
+	clearConsole(true);
 
 	// Generate Basic Combos
 	iCharacter::ComboList basic_combos;
 	GenerateBasicCombos(basic_combos, &ninja);
+	pauseConsole();
+	clearConsole(true);
 
 	// Generate VTC Combos
 
