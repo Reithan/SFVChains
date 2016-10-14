@@ -2,7 +2,7 @@
 #include "MoveData.h"
 
 struct iCharacter {
-	typedef std::list<MoveData> Combo;
+	typedef std::list<const MoveData*> Combo;
 	std::vector<MoveData> _moves;
 	iCharacter() {}
 	virtual ~iCharacter() {}
