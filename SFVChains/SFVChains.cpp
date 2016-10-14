@@ -30,7 +30,7 @@ void GenerateHitConfirms(set<iCharacter::Combo>& confirm_combos_final, iCharacte
 				if (((j->hasType(MoveData::kMVT_Air)) == 0 || i->back().canCancelInto(MoveData::kMVT_Air)) &&
 						((j->hasType(MoveData::kMVT_KnockBack)) == 0 || i->back().hasType(MoveData::kMVT_Dash)) &&
 						!j->isWhiffable() &&
-						(i->back().blockAdv() >= j->startup - MoveData::kFAC_FrameTrapGap || i->back().canCancelInto(*j)) &&
+						(i->back().blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap || i->back().canCancelInto(*j)) &&
 						!j->isKnockDown() &&
 						!j->hasType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow)) {
 					found = true;
@@ -223,7 +223,7 @@ int main()
 				cout << " - Possible Stun";
 			if(last_move.isReset() && (++(i->rbegin()))->isKnockDown())
 				cout << " - Vortex";
-			else if(last_move.isKnockDown(true))
+			else if(last_move.hasType(MoveData::kMVT_HardKnockDown))
 				cout << " - Hard Knockdown";
 			else if(last_move.isKnockDown())
 				cout << " - Knockdown";

@@ -2,14 +2,11 @@
 #include "stdafx.h"
 
 struct MoveData {
-	enum FlagsAndConstants {
-		kFAC_KnockDown = 16384, // mask/flag of highest non-negative bit
-		kFAC_Whiff = 8192, // mask/flag of 2nd highest non-negative bit
-		kFAC_Reset = 4096, // mask/flag of 3rd highest non-negative bit
-		kFAC_KnockDownRecover = -49, // loss of KD Adv from Recovery
-		kFAC_KnockDownRecoverBack = -44, // loss of KD Adv from Back Recovery
-		kFAC_CounterHitAdv = 2,
-		kFAC_FrameTrapGap = 2,
+	enum Constants {
+		kMVT_KnockDownRecover = -49, // loss of KD Adv from Recovery
+		kMVT_KnockDownRecoverBack = -44, // loss of KD Adv from Back Recovery
+		kMDC_CounterHitAdv = 2,
+		kMDC_FrameTrapGap = 2,
 	};
 
 	enum HitAdvantageType {
@@ -34,6 +31,9 @@ struct MoveData {
 		kMVT_HardKnockDown = 1024,
 		kMVT_KnockBack = 2048,
 		kMVT_Dash = 4096,
+		kMVT_KnockDown = 8192,
+		kMVT_Whiff = 16384,
+		kMVT_Reset = 32768, // this is highest for short - will need to expand to int if more types/flags are needed
 	};
 
 	std::string name;
@@ -41,34 +41,32 @@ struct MoveData {
 	short damage;
 	short stun;
 
-	inline bool  isKnockDown(bool hard = false)  const { return (hard)? (hit_adv & kFAC_KnockDown) != 0 || (type & kMVT_HardKnockDown) != 0: (type & kMVT_HardKnockDown) != 0; }
+	inline bool  isKnockDown(bool hard = false)  const { return (hard)? (type & kMVT_KnockDown) != 0 || (type & kMVT_HardKnockDown) != 0: (type & kMVT_HardKnockDown) != 0; }
 
-	inline bool isWhiffable() const { return (block_adv & kFAC_Whiff) != 0; }
-	inline bool isReset() const { return (hit_adv & kFAC_Reset) != 0; }
-	inline bool canVTC()  const { return (cancels & kMVT_VT) != 0; }
+	inline bool isWhiffable() const { return (type & kMVT_Whiff) != 0; }
+	inline bool isReset() const { return (type & kMVT_Reset) != 0; }
+	inline bool canVTC()  const { return (type & kMVT_VT) != 0; }
 
 	inline bool canCancel() const { return cancels != NULL; }
 	inline bool canCancelInto(short next) const { return (cancels & next) != 0; }
 	inline bool canCancelInto(MoveData next) const { return (cancels & next.type) != 0; }
 
-	inline short blockAdv() const { return (block_adv & ~kFAC_Whiff) ;}
+	inline short blockAdv() const { return block_adv ;}
 	inline short hitAdv(HitAdvantageType hat_type = kHAT_Recover) const {
-		short time = (hit_adv & ~(kFAC_KnockDown | kFAC_Reset));
 		return (hat_type == kHAT_Raw || !(this->isKnockDown() || this->hasType(kMVT_Throw | kMVT_AirThrow)))? // if
-				time :
+				hit_adv :
 			((hat_type == kHAT_Recover)? // else if
-				time - kFAC_KnockDownRecover :
-				time - kFAC_KnockDownRecoverBack); // else
+				hit_adv - kMVT_KnockDownRecover :
+				hit_adv - kMVT_KnockDownRecoverBack); // else
 	}
 	
-	inline short blockAdvVTC() const { return (vtc_block_adv & ~kFAC_Whiff) ;}
+	inline short blockAdvVTC() const { return vtc_block_adv ;}
 	inline short hitAdvVTC(HitAdvantageType hat_type = kHAT_Raw) const {
-		short time = (vtc_hit_adv & ~(kFAC_KnockDown | kFAC_Reset));
 		return (hat_type == kHAT_Raw || !(this->isKnockDown() || this->hasType(kMVT_Throw | kMVT_AirThrow)))? // if
-				time :
+				vtc_hit_adv :
 			((hat_type == kHAT_Recover)? // else if
-				time - kFAC_KnockDownRecover :
-				time - kFAC_KnockDownRecoverBack); // else
+				vtc_hit_adv - kMVT_KnockDownRecover :
+				vtc_hit_adv - kMVT_KnockDownRecoverBack); // else
 	}
 	
 	inline bool hasType(short mask) const { return (type & mask) != 0; }
