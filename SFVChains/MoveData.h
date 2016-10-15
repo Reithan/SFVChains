@@ -42,6 +42,7 @@ struct MoveData {
 
 	std::string name;
 	short startup;
+	short recovery;
 	short damage;
 	short stun;
 
@@ -71,6 +72,7 @@ struct MoveData {
 	MoveData::MoveData(
 		std::string name,
 		short startup,
+		short recovery,
 		short block_adv,
 		short hit_adv,
 		short vtc_block_adv,
@@ -90,3 +92,7 @@ private:
 	short vtc_block_adv;
 	short vtc_hit_adv;
 };
+
+typedef std::list<const MoveData*> Combo;
+typedef std::queue<Combo> ComboList;
+bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& stun, int& push, int& EX);

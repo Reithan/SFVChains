@@ -2,8 +2,6 @@
 #include "MoveData.h"
 
 struct iCharacter {
-	typedef std::list<const MoveData*> Combo;
-	typedef std::queue<iCharacter::Combo> ComboList;
 	std::vector<MoveData> _moves;
 	iCharacter() {}
 	virtual ~iCharacter() {}
