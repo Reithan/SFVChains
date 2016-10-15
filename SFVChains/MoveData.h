@@ -45,7 +45,7 @@ struct MoveData {
 	short damage;
 	short stun;
 
-	inline bool  isKnockDown(bool hard = false)  const { return (hard)? (type & kMVT_KnockDown) != 0 || (type & kMVT_HardKnockDown) != 0: (type & kMVT_HardKnockDown) != 0; }
+	inline bool isKnockDown(bool hard = false)  const { return (hard)? ((type & kMVT_HardKnockDown) != 0) : (type & kMVT_KnockDown) != 0 || (type & kMVT_HardKnockDown) != 0; }
 
 	inline bool isWhiffable() const { return (type & kMVT_Whiff) != 0; }
 	inline bool isReset() const { return (type & kMVT_Reset) != 0; }
@@ -58,7 +58,7 @@ struct MoveData {
 	inline short blockAdv() const { return block_adv ;}
 	inline short hitAdv(HitAdvantageType hat_type = kHAT_Juggle) const {
 		if (hat_type == kHAT_Raw || this->notType(kMVT_KnockDown | kMVT_KnockBack | kMVT_HardKnockDown | kMVT_Throw | kMVT_AirThrow))
-				return hit_adv;
+			return hit_adv;
 		else if (hat_type == kHAT_Juggle)
 			return hit_adv - kMVT_KnockDownRecover - kMDC_FallDownFrames;
 		else if (hat_type == kHAT_Recover)

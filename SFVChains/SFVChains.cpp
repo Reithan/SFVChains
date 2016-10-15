@@ -145,7 +145,8 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 	for (auto* i = &basic_combos_working.front(); !basic_combos_working.empty();){
 		bool added = false;
 		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
-			if ((j->notType(MoveData::kMVT_Air) || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
+			if (!i->back()->isKnockDown(true) &&
+				(j->notType(MoveData::kMVT_Air) || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
 					(i->back()->notType(MoveData::kMVT_KnockBack) || (i->back()->hasType(MoveData::kMVT_KnockBack) && j->hasType(MoveData::kMVT_Dash | MoveData::kMVT_Projectile))) &&
 					(i->back()->notType(MoveData::kMVT_Jump) || (i->back()->hasType(MoveData::kMVT_Jump) && j->hasType(MoveData::kMVT_Air))) &&
 					j->notType(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
@@ -253,7 +254,7 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 	}
 }
 
-void outputComboList(iCharacter::ComboList combos) {
+void outputComboList(iCharacter::ComboList combos, ostream& output = cout) {
 	int count = 0;
 	for (auto* i = &combos.front(); !combos.empty();) {
 		const MoveData* last_move;
@@ -262,45 +263,47 @@ void outputComboList(iCharacter::ComboList combos) {
 		for (auto j = i->begin(); j != i->end(); ++j) {
 			if (j != i->begin()) {
 				if (last_move->canCancelInto(**j))
-					cout << " xx ";
+					output << " xx ";
 				else if (last_move->hitAdv() < (*j)->startup)
-					cout << " [FT] ";
+					output << " [FT] ";
 				else
-					cout << ", ";
+					output << ", ";
 			}
-			cout << (*j)->name;
+			output << (*j)->name;
 			last_move = *j;
 			damage += short((*j)->damage * scaling);
 			stun += (*j)->stun;
 			scaling -= 0.1f;
 		}
 		if (damage > 1000)
-			cout << " - Fatal";
+			output << " - Fatal";
 		else {
 			if (damage > 900)
-				cout << " - Possible Fatal";
+				output << " - Possible Fatal";
 			if (stun > 1000)
-				cout << " - Stun";
+				output << " - Stun";
 			else if (stun > 900)
-				cout << " - Possible Stun";
+				output << " - Possible Stun";
 			if (last_move->isReset() && (++*(i->rbegin()))->isKnockDown())
-				cout << " - Vortex";
+				output << " - Vortex";
 			else if (last_move->hasType(MoveData::kMVT_HardKnockDown))
-				cout << " - Hard Knockdown";
+				output << " - Hard Knockdown";
 			else if (last_move->isKnockDown())
-				cout << " - Knockdown";
+				output << " - Knockdown";
 		}
-		cout << endl;
-		if (++count % 50 == 0) {
+		output << endl;
+		if (&output == &cout && ++count % 50 == 0) {
 			pauseConsole();
-			clearConsole();
+			clearConsole(true);
 		}
 		combos.pop();
 		if (!combos.empty())
 			i = &combos.front();
 	}
-	pauseConsole();
+	if (&output == &cout)
+		pauseConsole();
 }
+
 int main()
 {
 	HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -310,16 +313,27 @@ int main()
 	SetConsoleCursorInfo(console, &lpCursor);
 
 	Ibuki ninja;
+	fstream file;
 
 	// Generate Hit Confirms
 	iCharacter::ComboList confirm_combos;
 	GenerateHitConfirms(confirm_combos, &ninja);
+	file.open("Hit Confirms.txt", ios::out | ios::trunc);
+	if (file.is_open()) {
+		outputComboList(confirm_combos, file);
+		file.close();
+	}
 	pauseConsole();
 	clearConsole(true);
 
 	// Generate Basic Combos
 	iCharacter::ComboList basic_combos;
 	GenerateBasicCombos(basic_combos, &ninja);
+	file.open("Basic Combos.txt", ios::out | ios::trunc);
+	if (file.is_open()) {
+		outputComboList(basic_combos, file);
+		file.close();
+	}
 	pauseConsole();
 	clearConsole(true);
 
@@ -330,8 +344,10 @@ int main()
 	// Generate Confirmed Combos
 
 	// Print Results
+	clearConsole(true);
 	cout << "==Hit Confirm Strings < 5 Moves==\n";
 	outputComboList(confirm_combos);
+	clearConsole(true);
 	cout << "\n\n==Basic Combos==\n";
 	outputComboList(basic_combos);
 	return 0;
