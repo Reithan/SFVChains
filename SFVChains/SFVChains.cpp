@@ -46,14 +46,13 @@ void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
 	}
 	for (auto* i = &confirm_combos_working.front(); !confirm_combos_working.empty();){
 		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
-			if (((j->hasAnyType(MoveData::kMVT_Air)) == 0 || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
-					((i->back()->hasAnyType(MoveData::kMVT_KnockBack)) == 0 || j->hasAnyType(MoveData::kMVT_Dash)) &&
-					!j->isWhiffable() &&
-					j->notAllTypes(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
-					(//(/*can cancel*/ && (/*adv - recovery  >= frametrap*/)) || 
-						(i->back()->blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap)) &&
-					!j->isKnockDown() &&
-					!j->hasAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow)) {
+			if (((j->hasAnyType(MoveData::kMVT_Air)) == 0 || i->back()->canCancelInto(MoveData::kMVT_Air)) && // only allow air follow up if it's cancelled into
+					!j->isWhiffable() && // don't hit confirm with whiffables
+					j->notAllTypes(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA | MoveData::kMVT_EX) && // dont' waste EX, V, or CA on hit confirms
+					((i->back()->canCancelInto(*j) && (i->back()->blockAdv(true) >= j->startup - MoveData::kMDC_FrameTrapGap)) ||  // can cancel into next move
+						(i->back()->blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap)) && // or link / FT into it
+					!j->isKnockDown() && // don't hit confirm into KD
+					!j->hasAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow)) { // no throws in hit confirms
 				Combo temp = *i;
 				temp.push_back(&*j);
 				if(fighter->isValidCombo(temp)){
@@ -107,7 +106,7 @@ void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 					(i->back()->notAllTypes(MoveData::kMVT_KnockBack) || (i->back()->hasAnyType(MoveData::kMVT_KnockBack) && j->hasAnyType(MoveData::kMVT_Dash | MoveData::kMVT_Projectile))) &&
 					(i->back()->notAllTypes(MoveData::kMVT_Jump) || (i->back()->hasAnyType(MoveData::kMVT_Jump) && j->hasAnyType(MoveData::kMVT_Air))) &&
 					j->notAllTypes(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
-					(//i->back()->canCancelInto(*j) || - figure out how to properly incorporate cancel data - will likely require more included frame data (recovery) - TODO
+					((i->back()->canCancelInto(*j) && i->back()->hitAdv(true) >= j->startup)|| 
 					((j->notAllTypes(MoveData::kMVT_Dash) || (j->hasAnyType(MoveData::kMVT_Dash) && i->back()->hitAdv() + j->hitAdv() + j->startup > 2)) &&
 						((i->back()->notAllTypes(MoveData::kMVT_Dash) && i->back()->hitAdv() >= j->startup) ||
 							(i->size() > 1 &&  i->back()->hasAnyType(MoveData::kMVT_Dash) && i->back()->hitAdv() + (++*(i->rbegin()))->hitAdv() >= j->startup)))) &&

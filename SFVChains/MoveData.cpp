@@ -41,17 +41,21 @@ MoveData::MoveData(
 	cancels((MoveTypes)cancels)
 {}
 
-short MoveData::hitAdv(HitAdvantageType hat_type) const {
+short MoveData::hitAdv(bool cancel, HitAdvantageType hat_type) const {
+	short adv = 0;
 	if (hat_type == kHAT_Raw || this->notAllTypes(kMVT_KnockDown | kMVT_KnockBack | kMVT_HardKnockDown | kMVT_Throw | kMVT_AirThrow))
-		return hit_adv;
+		adv = hit_adv;
 	else if (hat_type == kHAT_Juggle)
-		return hit_adv - kMVT_KnockDownRecover - kMDC_FallDownFrames;
+		adv =  hit_adv - kMVT_KnockDownRecover - kMDC_FallDownFrames;
 	else if (hat_type == kHAT_Recover)
-		return hit_adv - kMVT_KnockDownRecover;
+		adv =  hit_adv - kMVT_KnockDownRecover;
 	else if (hat_type == kHAT_RecoverBack)
-		return hit_adv - kMVT_KnockDownRecoverBack;
+		adv =  hit_adv - kMVT_KnockDownRecoverBack;
 	else
-		return hit_adv;
+		adv =  hit_adv;
+	if (cancel)
+		adv -= recovery;
+	return adv;
 }
 
 short MoveData::hitAdvVTC(HitAdvantageType hat_type) const {
@@ -86,6 +90,7 @@ bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& 
 			start = 0;
 			while ((start = (*k)->name.find("H", ++start)) != (*k)->name.npos)
 				push = 0;
+			push /= 2;
 		}
 		else if ((*k)->hasAnyType(MoveData::kMVT_Basic)) {
 			if ((*k)->name.find("L") != (*k)->name.npos)

@@ -56,12 +56,14 @@ struct MoveData {
 	inline bool canCancelInto(unsigned int next) const { return (cancels & next) != 0; }
 	inline bool canCancelInto(MoveData next) const { return (cancels & next.type) != 0; }
 
-	inline short blockAdv() const { return block_adv ;}
-	short hitAdv(HitAdvantageType hat_type = kHAT_Juggle) const;
+	inline short blockAdv(bool cancel = false) const {
+		return block_adv - ((cancel)? recovery : 0);}
+	inline short hitAdv(HitAdvantageType hat_type = kHAT_Juggle) const { return hitAdv(false, hat_type); }
+	short hitAdv(bool cancel, HitAdvantageType hat_type = kHAT_Juggle) const;
 	
 	inline short blockAdvVTC() const { return vtc_block_adv ;}
 	short hitAdvVTC(HitAdvantageType hat_type = kHAT_Raw) const;
-	
+
 	inline bool hasAnyType(unsigned int mask) const { return (type & mask) != 0; }
 	inline bool notAnyType(unsigned int mask) const { return (type & mask) != type; }
 
