@@ -4,8 +4,9 @@
 #include "stdafx.h"
 #include "Ibuki.h"
 
+#define WHOLE_CONSOLE 10000
 using namespace std;
-void clearConsole(bool clear = false) {
+void clearConsole(unsigned int clear = 0) {
 	HANDLE hOut;
 	COORD Position;
 	DWORD Written;
@@ -15,9 +16,20 @@ void clearConsole(bool clear = false) {
 	Position.X = 0;
 	Position.Y = 0;
 	if(clear)
-		FillConsoleOutputCharacter(hOut, ' ', 1000000, Position, &Written);
+		FillConsoleOutputCharacter(hOut, ' ', clear, Position, &Written);
 
 	SetConsoleCursorPosition(hOut, Position);
+}
+
+template <typename T>
+void printLoc(SHORT X, SHORT Y, const T& buffer, ostream& output = cout) {
+	HANDLE hOut;
+	COORD Position;
+	hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	Position.X = X;
+	Position.Y = Y;
+	SetConsoleCursorPosition(hOut, Position);
+	output << buffer;
 }
 
 void pauseConsole() {
@@ -28,7 +40,8 @@ void pauseConsole() {
 }
 
 void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
-	clearConsole(true);
+	clearConsole(WHOLE_CONSOLE);
+	cout << "==Confirm Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList confirm_combos_working;
 	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
 		if (i->blockAdv() > -3 &&
@@ -66,26 +79,24 @@ void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
 					}
 				}
 			}
-			else if (i->back()->blockAdv() < j->startup && i->back()->blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap)
-				cout << "Discard Frametrap\n";
-
 		}
 		int damage = 0, stun = 0, push = 0, EX = 3;
 		if (CalculateComboMetrics(*i, damage, stun, push, EX) && (fighter->isValidCombo(*i) &&
 			(i->size() > 2 || i->back()->hasAnyType(MoveData::kMVT_TargetCombo)) && i->back()->blockAdv() > -3 && (i->back()->hitAdv(MoveData::kHAT_Raw) > 2 || i->back()->canCancel())))
 			confirm_combos_final.push(*i);
-		else if ((++*(i->rbegin()))->blockAdv() < i->back()->startup && (++*(i->rbegin()))->blockAdv() >= i->back()->startup - MoveData::kMDC_FrameTrapGap)
-			cout << "Discard Frametrap\n";
 		confirm_combos_working.pop();
 		if (!confirm_combos_working.empty())
 			i = &confirm_combos_working.front();
-		clearConsole();
-		cout << "==Confirm Combos Processing==\nSeed combos in queue:\t" << confirm_combos_working.size() << "\nFinal combos:\t" << confirm_combos_final.size() << '\n';;
+		printLoc(25, 1, string(6,' '));
+		printLoc(25, 1, confirm_combos_working.size());
+		printLoc(25, 2, string(6,' '));
+		printLoc(25, 2, confirm_combos_final.size());
 	}
 }
 
 void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
-	clearConsole(true);
+	clearConsole(WHOLE_CONSOLE);
+	cout << "==Basic Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList basic_combos_working;
 	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
 		if ((i->hitAdv() > 2 &&
@@ -148,13 +159,16 @@ void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 		basic_combos_working.pop();
 		if (!basic_combos_working.empty())
 			i = &basic_combos_working.front();
-		clearConsole();
-		cout << "==Basic Combos Processing==\nSeed combos in queue:\t" << basic_combos_working.size() << "\nFinal combos:\t" << basic_combos_final.size() << '\n';
+		printLoc(25, 1, string(6, ' '));
+		printLoc(25, 1, basic_combos_working.size());
+		printLoc(25, 2, string(6, ' '));
+		printLoc(25, 2, basic_combos_final.size());
 	}
 }
 
-void outputComboList(ComboList combos, ostream& output = cout) {
+void outputComboList(ComboList combos, const string& header, ostream& output = cout) {
 	int count = 0;
+	output << header << endl;
 	for (auto* i = &combos.front(); !combos.empty();) {
 		const MoveData* last_move;
 		int damage = 0, stun = 0;
@@ -174,12 +188,12 @@ void outputComboList(ComboList combos, ostream& output = cout) {
 			stun += (*j)->stun;
 			scaling -= 0.1f;
 		}
-		if (damage > 1000)
+		if (damage > WHOLE_CONSOLE)
 			output << " - Fatal";
 		else {
 			if (damage > 900)
 				output << " - Possible Fatal";
-			if (stun > 1000)
+			if (stun > WHOLE_CONSOLE)
 				output << " - Stun";
 			else if (stun > 900)
 				output << " - Possible Stun";
@@ -193,7 +207,8 @@ void outputComboList(ComboList combos, ostream& output = cout) {
 		output << " - " << damage << " Damage, " << stun << " Stun\n";
 		if (&output == &cout && ++count % 50 == 0) {
 			pauseConsole();
-			clearConsole(true);
+			clearConsole(WHOLE_CONSOLE);
+			output << header << endl;
 		}
 		combos.pop();
 		if (!combos.empty())
@@ -219,22 +234,22 @@ int main()
 	GenerateHitConfirms(confirm_combos, &ninja);
 	file.open("Hit Confirms.txt", ios::out | ios::trunc);
 	if (file.is_open()) {
-		outputComboList(confirm_combos, file);
+		outputComboList(confirm_combos, "==Hit Confirm Strings < 5 Moves==", file);
 		file.close();
 	}
 	pauseConsole();
-	clearConsole(true);
+	clearConsole(100);
 
 	// Generate Basic Combos
 	ComboList basic_combos;
 	GenerateBasicCombos(basic_combos, &ninja);
 	file.open("Basic Combos.txt", ios::out | ios::trunc);
 	if (file.is_open()) {
-		outputComboList(basic_combos, file);
+		outputComboList(basic_combos, "==Basic Combos==", file);
 		file.close();
 	}
 	pauseConsole();
-	clearConsole(true);
+	clearConsole(100);
 
 	// Generate VTC Combos
 
@@ -243,11 +258,9 @@ int main()
 	// Generate Confirmed Combos
 
 	// Print Results
-	clearConsole(true);
-	cout << "==Hit Confirm Strings < 5 Moves==\n";
-	outputComboList(confirm_combos);
-	clearConsole(true);
-	cout << "\n\n==Basic Combos==\n";
-	outputComboList(basic_combos);
+	clearConsole(100);
+	outputComboList(confirm_combos, "==Hit Confirm Strings < 5 Moves==");
+	clearConsole(100);
+	outputComboList(basic_combos, "==Basic Combos==");
 	return 0;
 }
