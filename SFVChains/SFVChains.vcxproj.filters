@@ -16,6 +16,9 @@
     <Filter Include="Header Files\Characters">
       <UniqueIdentifier>{51fcd706-9a50-47f1-971f-58cc10fee934}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Characters">
+      <UniqueIdentifier>{153a61fc-6efe-4464-9806-c26c269fb984}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -30,11 +33,11 @@
     <ClInclude Include="Ibuki.h">
       <Filter>Header Files\Characters</Filter>
     </ClInclude>
-    <ClInclude Include="MoveData.h">
-      <Filter>Header Files\Characters</Filter>
-    </ClInclude>
     <ClInclude Include="iCharacter.h">
       <Filter>Header Files\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="MoveData.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +46,12 @@
     </ClCompile>
     <ClCompile Include="SFVChains.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ibuki.cpp">
+      <Filter>Source Files\Characters</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

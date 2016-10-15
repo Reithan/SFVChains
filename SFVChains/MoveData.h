@@ -56,48 +56,19 @@ struct MoveData {
 	inline bool canCancelInto(MoveData next) const { return (cancels & next.type) != 0; }
 
 	inline short blockAdv() const { return block_adv ;}
-	inline short hitAdv(HitAdvantageType hat_type = kHAT_Juggle) const {
-		if (hat_type == kHAT_Raw || this->notType(kMVT_KnockDown | kMVT_KnockBack | kMVT_HardKnockDown | kMVT_Throw | kMVT_AirThrow))
-			return hit_adv;
-		else if (hat_type == kHAT_Juggle)
-			return hit_adv - kMVT_KnockDownRecover - kMDC_FallDownFrames;
-		else if (hat_type == kHAT_Recover)
-			return hit_adv - kMVT_KnockDownRecover;
-		else if (hat_type == kHAT_RecoverBack)
-			return hit_adv - kMVT_KnockDownRecoverBack;
-		else
-			return hit_adv;
-	}
+	short hitAdv(HitAdvantageType hat_type = kHAT_Juggle) const;
 	
 	inline short blockAdvVTC() const { return vtc_block_adv ;}
-	inline short hitAdvVTC(HitAdvantageType hat_type = kHAT_Raw) const {
-		if (hat_type == kHAT_Raw || this->notType(kMVT_KnockDown | kMVT_KnockBack | kMVT_HardKnockDown | kMVT_Throw | kMVT_AirThrow))
-				return vtc_hit_adv;
-		else if (hat_type == kHAT_Juggle)
-			return vtc_hit_adv - kMVT_KnockDownRecover - kMDC_FallDownFrames;
-		else if (hat_type == kHAT_Recover)
-			return vtc_hit_adv - kMVT_KnockDownRecover;
-		else if (hat_type == kHAT_RecoverBack)
-			return vtc_hit_adv - kMVT_KnockDownRecoverBack;
-		else
-			return vtc_hit_adv;
-	}
+	short hitAdvVTC(HitAdvantageType hat_type = kHAT_Raw) const;
 	
-	inline bool hasType(unsigned int mask) const { return (type & mask) != 0; }
-	inline bool notType(unsigned int mask) const { return (type & mask) == 0; }
+	inline bool hasAnyType(unsigned int mask) const { return (type & mask) != 0; }
+	inline bool notAnyType(unsigned int mask) const { return (type & mask) != type; }
 
-	inline MoveData() :
-		name(""),
-		startup(0),
-		block_adv(0),
-		hit_adv(0),
-		vtc_block_adv(0),
-		vtc_hit_adv(0),
-		damage(0),
-		stun(0),
-		type((MoveTypes)0),
-		cancels((MoveTypes)0) {}
-	inline MoveData(
+	inline bool hasAllTypes(unsigned int mask) const { return (type & mask) == mask; }
+	inline bool notAllTypes(unsigned int mask) const { return (type & mask) == 0; }
+
+	MoveData();
+	MoveData::MoveData(
 		std::string name,
 		short startup,
 		short block_adv,
@@ -107,23 +78,9 @@ struct MoveData {
 		short damage,
 		short stun,
 		unsigned int type,
-		unsigned int cancels
-		) :
-		name(name),
-		startup(startup),
-		block_adv(block_adv),
-		hit_adv(hit_adv),
-		vtc_block_adv(vtc_block_adv),
-		vtc_hit_adv(vtc_hit_adv),
-		damage(damage),
-		stun(stun),
-		type((MoveTypes)type),
-		cancels((MoveTypes)cancels)
-	{}
+		unsigned int cancels);
 
-	inline bool operator<(const MoveData& rhs) const {
-		return name < rhs.name;
-	}
+	inline bool operator<(const MoveData& rhs) const { return name < rhs.name; }
 
 private:
 	short block_adv;
