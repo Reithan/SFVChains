@@ -43,9 +43,7 @@ void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter
 				confirm_combos_final.push(temp);
 		}
 	}
-	for (auto* i = &confirm_combos_working.front(); !confirm_combos_working.empty(); i = &confirm_combos_final.front()){
-		clearConsole();
-		cout << "==Confirm Combos Processing==\nSeed combos in queue:\t" << confirm_combos_working.size() << "\nFinal combos:\t" << confirm_combos_final.size() << '\n';;
+	for (auto* i = &confirm_combos_working.front(); !confirm_combos_working.empty();){
 		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
 			if (((j->hasType(MoveData::kMVT_Air)) == 0 || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
 					((i->back()->hasType(MoveData::kMVT_KnockBack)) == 0 || j->hasType(MoveData::kMVT_Dash)) &&
@@ -82,8 +80,10 @@ void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter
 						}
 						else
 							push = 0;
+						if ((*k)->hasType(MoveData::kMVT_Basic) && push > 5)
+							break;
 					}
-					if (push > 3)
+					if (push > 5)
 						continue;
 					if (temp.size() < 4)
 						confirm_combos_working.push(temp);
@@ -116,10 +116,16 @@ void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter
 			}
 			else
 				push = 0;
+			if ((*k)->hasType(MoveData::kMVT_Basic) && push > 5)
+				break;
 		}
-		if (push < 4 && fighter->isValidCombo(*i) && (i->size() > 2 || i->back()->hasType(MoveData::kMVT_TargetCombo)) && i->back()->blockAdv() > -3 && (i->back()->hitAdv(MoveData::kHAT_Raw) > 2 || i->back()->canCancel()))
+		if (push < 6 && fighter->isValidCombo(*i) && (i->size() > 2 || i->back()->hasType(MoveData::kMVT_TargetCombo)) && i->back()->blockAdv() > -3 && (i->back()->hitAdv(MoveData::kHAT_Raw) > 2 || i->back()->canCancel()))
 			confirm_combos_final.push(*i);
 		confirm_combos_working.pop();
+		if (!confirm_combos_working.empty())
+			i = &confirm_combos_working.front();
+		clearConsole();
+		cout << "==Confirm Combos Processing==\nSeed combos in queue:\t" << confirm_combos_working.size() << "\nFinal combos:\t" << confirm_combos_final.size() << '\n';;
 	}
 }
 
@@ -136,9 +142,7 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 				basic_combos_working.push(temp);
 		}
 	}
-	for (auto* i = &basic_combos_working.front(); !basic_combos_working.empty(); i = &basic_combos_working.front()){
-		clearConsole();
-		cout << "==Basic Combos Processing==\nSeed combos in queue:\t" << basic_combos_working.size() << "\nFinal combos:\t" << basic_combos_final.size() << '\n';
+	for (auto* i = &basic_combos_working.front(); !basic_combos_working.empty();){
 		bool added = false;
 		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
 			if ((j->notType(MoveData::kMVT_Air) || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
@@ -182,8 +186,10 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 						}
 						else
 							push = 0;
+						if ((*k)->hasType(MoveData::kMVT_Basic) && push > 5)
+							break;
 					}
-					if(push > 3 || EX < 0)
+					if(push > 5 || EX < 0)
 						continue;
 					if (scaling > 0.0f && damage < 250 && stun < 900 && 
 						(temp.size() > 1 && (j->notType(MoveData::kMVT_Dash) || 
@@ -228,8 +234,10 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 				}
 				else
 					push = 0;
+				if ((*k)->hasType(MoveData::kMVT_Basic) && push > 5)
+					break;
 			}
-			if (push < 4 && i->size() > 1 && !added && ((damage >= 250 || stun >= 900 || i->back()->isKnockDown() ||
+			if (push < 6 && i->size() > 1 && !added && ((damage >= 250 || stun >= 900 || i->back()->isKnockDown() ||
 							((++*(i->rbegin()))->isKnockDown() && i->back()->isReset())) &&
 							(
 								(i->back()->notType(MoveData::kMVT_Dash) ||
@@ -238,12 +246,16 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 				basic_combos_final.push(*i);
 		}
 		basic_combos_working.pop();
+		if (!basic_combos_working.empty())
+			i = &basic_combos_working.front();
+		clearConsole();
+		cout << "==Basic Combos Processing==\nSeed combos in queue:\t" << basic_combos_working.size() << "\nFinal combos:\t" << basic_combos_final.size() << '\n';
 	}
 }
 
 void outputComboList(iCharacter::ComboList combos) {
 	int count = 0;
-	for (auto* i = &combos.front(); !combos.empty(); i = &combos.front()) {
+	for (auto* i = &combos.front(); !combos.empty();) {
 		const MoveData* last_move;
 		int damage = 0, stun = 0;
 		float scaling = 1.0f;
@@ -284,6 +296,8 @@ void outputComboList(iCharacter::ComboList combos) {
 			clearConsole();
 		}
 		combos.pop();
+		if (!combos.empty())
+			i = &combos.front();
 	}
 	pauseConsole();
 }
