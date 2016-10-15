@@ -293,7 +293,7 @@ void outputComboList(iCharacter::ComboList combos, ostream& output = cout) {
 			else if (last_move->isKnockDown())
 				output << " - Knockdown";
 		}
-		output << endl;
+		output << " - " << damage << " Damage, " << stun << " Stun\n";
 		if (&output == &cout && ++count % 50 == 0) {
 			pauseConsole();
 			clearConsole(true);
