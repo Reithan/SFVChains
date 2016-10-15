@@ -49,7 +49,7 @@ void GenerateHitConfirms(iCharacter::ComboList& confirm_combos_final, iCharacter
 					((i->back()->hasType(MoveData::kMVT_KnockBack)) == 0 || j->hasType(MoveData::kMVT_Dash)) &&
 					!j->isWhiffable() &&
 					j->notType(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
-					(i->back()->blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap || i->back()->canCancelInto(*j)) &&
+					(i->back()->blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap) &&
 					!j->isKnockDown() &&
 					!j->hasType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow)) {
 				iCharacter::Combo temp = *i;
@@ -149,7 +149,7 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 					(i->back()->notType(MoveData::kMVT_KnockBack) || (i->back()->hasType(MoveData::kMVT_KnockBack) && j->hasType(MoveData::kMVT_Dash | MoveData::kMVT_Projectile))) &&
 					(i->back()->notType(MoveData::kMVT_Jump) || (i->back()->hasType(MoveData::kMVT_Jump) && j->hasType(MoveData::kMVT_Air))) &&
 					j->notType(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
-					(i->back()->canCancelInto(*j) || 
+					(/*i->back()->canCancelInto(*j) || */
 					((j->notType(MoveData::kMVT_Dash) || (j->hasType(MoveData::kMVT_Dash) && i->back()->hitAdv() + j->hitAdv() + j->startup > 2)) &&
 						((i->back()->notType(MoveData::kMVT_Dash) && i->back()->hitAdv() >= j->startup) ||
 							(i->size() > 1 &&  i->back()->hasType(MoveData::kMVT_Dash) && i->back()->hitAdv() + (++*(i->rbegin()))->hitAdv() >= j->startup)))) &&
