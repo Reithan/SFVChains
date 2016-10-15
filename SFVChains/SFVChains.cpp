@@ -21,6 +21,7 @@ void clearConsole(bool clear = false) {
 }
 
 void pauseConsole() {
+	cout << "\nPress enter to continue.";
 	cin.clear();
 	cin.sync();
 	cin.ignore();
@@ -145,7 +146,8 @@ void GenerateBasicCombos(iCharacter::ComboList& basic_combos_final, iCharacter* 
 	for (auto* i = &basic_combos_working.front(); !basic_combos_working.empty();){
 		bool added = false;
 		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
-			if (!i->back()->isKnockDown(true) &&
+			if (!i->back()->isKnockDown(true) && !i->back()->hasType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow) &&
+				(j->notType(MoveData::kMVT_AirThrow) || (j->hasType(MoveData::kMVT_AirThrow) && i->back()->hasType(MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack | MoveData::kMVT_Reset))) &&
 				(j->notType(MoveData::kMVT_Air) || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
 					(i->back()->notType(MoveData::kMVT_KnockBack) || (i->back()->hasType(MoveData::kMVT_KnockBack) && j->hasType(MoveData::kMVT_Dash | MoveData::kMVT_Projectile))) &&
 					(i->back()->notType(MoveData::kMVT_Jump) || (i->back()->hasType(MoveData::kMVT_Jump) && j->hasType(MoveData::kMVT_Air))) &&
