@@ -196,6 +196,7 @@ void outputComboList(ComboList combos, const string& header, ostream& output = c
 		const MoveData* last_move;
 		int damage = 0, stun = 0;
 		float scaling = 1.0f;
+		bool knockdown = false;
 		for (auto j = i.begin(); j != i.end(); ++j) {
 			if (j != i.begin()) {
 				if (last_move->canCancelInto(**j))
@@ -207,11 +208,12 @@ void outputComboList(ComboList combos, const string& header, ostream& output = c
 			}
 			output << (*j)->name;
 			last_move = *j;
-			damage += short((*j)->damage * scaling);
+			damage += short((*j)->damage * ((*j)->hasAnyType(MoveData::kMVT_CA)? MAX(0.5f,scaling) : scaling));
 			stun += (*j)->stun;
 			scaling -= 0.1f;
+			knockdown = knockdown || (*j)->hasAnyType(MoveData::kMVT_KnockDown | MoveData::kMVT_HardKnockDown);
 		}
-		output << " - " << damage << " Damage, " << stun << " Stun\n";
+		output << " - " << damage << " Damage, " << stun << " Stun";
 		if (damage > 1000)
 			output << " - Fatal";
 		else {
@@ -225,9 +227,10 @@ void outputComboList(ComboList combos, const string& header, ostream& output = c
 				output << " - Vortex";
 			else if (last_move->hasAnyType(MoveData::kMVT_HardKnockDown))
 				output << " - Hard Knockdown";
-			else if (last_move->isKnockDown())
+			else if (knockdown)
 				output << " - Knockdown";
 		}
+		output << '\n';
 		if (&output == &cout && ++count % 50 == 0) {
 			pauseConsole();
 			clearConsole(WHOLE_CONSOLE);
