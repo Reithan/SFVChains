@@ -37,7 +37,7 @@ Ibuki::Ibuki() : iCharacter() {
 	_moves.push_back(MoveData("TC 8HP 8HK", 0, 9, 9, 12, 0, 0, 70, 50, MoveData::kMVT_TargetCombo | MoveData::kMVT_Air, NULL));
 	_moves.push_back(MoveData("THROW", 5, 18, 64, 64, 0, 0, 120, 170, MoveData::kMVT_KnockDown | MoveData::kMVT_Throw, NULL));
 	_moves.push_back(MoveData("THROW BACK", 5, 18, 78, 78, 0, 0, 130, 170, MoveData::kMVT_KnockDown | MoveData::kMVT_Throw, NULL));
-	_moves.push_back(MoveData("THROW AIR", 5, 0, 110, 110, 0, 0, 140, 150, MoveData::kMVT_KnockDown | MoveData::kMVT_AirThrow, NULL));
+	_moves.push_back(MoveData("THROW AIR", 5, 0, 110, 110, 0, 0, 140, 150, MoveData::kMVT_KnockDown | MoveData::kMVT_Air | MoveData::kMVT_AirThrow, NULL));
 	_moves.push_back(MoveData("VT", 1, 5, 0, 0, 0, 0, 100, 100, MoveData::kMVT_VT, NULL));
 	_moves.push_back(MoveData("VS", 15, 20, -5, 85, 0, 0, 60, 100, MoveData::kMVT_VS | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
 	_moves.push_back(MoveData("VS HOLD", 25, 18, -2, 87, 0, 0, 80, 150, MoveData::kMVT_VS | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));

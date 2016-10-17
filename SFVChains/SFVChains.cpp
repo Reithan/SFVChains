@@ -6,6 +6,7 @@
 
 #define WHOLE_CONSOLE 10000
 using namespace std;
+using namespace concurrency;
 void clearConsole(unsigned int clear = 0) {
 	HANDLE hOut;
 	COORD Position;
@@ -43,141 +44,151 @@ void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
 	clearConsole(WHOLE_CONSOLE);
 	cout << "==Confirm Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList confirm_combos_working;
-	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
-		if (i->blockAdv() > -3 &&
-				!i->isKnockDown()) {
+	parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(),
+			[&confirm_combos_working, &confirm_combos_final, &fighter](auto& i) {
+		if (i.blockAdv() > -3 &&
+			!i.isKnockDown()) {
 			Combo temp;
-			temp.push_back(&*i);
+			temp.push_back(&i);
 			confirm_combos_working.push(temp);
-			if (!i->isWhiffable() &&
-					i->hasAnyType(MoveData::kMVT_TargetCombo) &&
-					(i->hitAdv(MoveData::kHAT_Raw) > 2 || i->canCancel()) &&
-					!i->hasAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow) &&
-					fighter->isValidCombo(temp))
+			if (!i.isWhiffable() &&
+				i.hasAnyType(MoveData::kMVT_TargetCombo) &&
+				(i.hitAdv(MoveData::kHAT_Raw) > 2 || i.canCancel()) &&
+				!i.hasAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow) &&
+				fighter->isValidCombo(temp))
 				confirm_combos_final.push(temp);
 		}
-	}
-	for (auto* i = &confirm_combos_working.front(); !confirm_combos_working.empty();){
-		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
-			if (((j->hasAnyType(MoveData::kMVT_Air)) == 0 || i->back()->canCancelInto(MoveData::kMVT_Air)) && // only allow air follow up if it's cancelled into
-					!j->isWhiffable() && // don't hit confirm with whiffables
-					j->notAllTypes(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA | MoveData::kMVT_EX) && // dont' waste EX, V, or CA on hit confirms
-					((i->back()->canCancelInto(*j) && (i->back()->blockAdv(true) >= j->startup - MoveData::kMDC_FrameTrapGap)) ||  // can cancel into next move
-						(i->back()->blockAdv() >= j->startup - MoveData::kMDC_FrameTrapGap)) && // or link / FT into it
-					!j->isKnockDown() && // don't hit confirm into KD
-					!j->hasAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow)) { // no throws in hit confirms
-				Combo temp = *i;
-				temp.push_back(&*j);
-				if(fighter->isValidCombo(temp)){
+	});
+	atomic<unsigned int> task_count = 0;
+	task_group group;
+	group.run_and_wait([&group, &task_count, &confirm_combos_working, &confirm_combos_final, &fighter] { // create task spooler
+		while (task_count > 0 || !confirm_combos_working.empty()) {
+			Combo combo;
+			if (confirm_combos_working.try_pop(combo)) {
+				++task_count;
+				group.run([&, combo] {
+					parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(), [&] (auto &j){
+						if (((j.hasAnyType(MoveData::kMVT_Air)) == 0 || combo.back()->canCancelInto(MoveData::kMVT_Air)) && // only allow air follow up if it's cancelled into
+							!j.isWhiffable() && // don't hit confirm with whiffables
+							j.notAllTypes(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA | MoveData::kMVT_EX) && // dont' waste EX, V, or CA on hit confirms
+							((combo.back()->canCancelInto(j) && (combo.back()->blockAdv(true) >= j.startup - MoveData::kMDC_FrameTrapGap)) ||  // can cancel into next move
+							(combo.back()->blockAdv() >= j.startup - MoveData::kMDC_FrameTrapGap)) && // or link / FT into it
+							!j.isKnockDown() && // don't hit confirm into KD
+							!j.hasAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow)) { // no throws in hit confirms
+							Combo temp = combo;
+							temp.push_back(&j);
+							if (fighter->isValidCombo(temp)) {
+								int damage = 0, stun = 0, push = 0, EX = 3;
+								if (CalculateComboMetrics(temp, damage, stun, push, EX)) {
+									if (temp.size() < 4)
+										confirm_combos_working.push(temp);
+									else if ((j).blockAdv() > -3 && ((j).hitAdv(MoveData::kHAT_Raw) > 2 || (j).canCancel())) {
+										confirm_combos_final.push(temp);
+									}
+								}
+							}
+						}
+					});
 					int damage = 0, stun = 0, push = 0, EX = 3;
-					if(!CalculateComboMetrics(temp, damage, stun, push, EX))
-						continue;
-					if (temp.size() < 4)
-						confirm_combos_working.push(temp);
-					else if ((*j).blockAdv() > -3 && ((*j).hitAdv(MoveData::kHAT_Raw) > 2 || (*j).canCancel())) {
-						confirm_combos_final.push(temp);
-					}
-				}
+					if (CalculateComboMetrics(combo, damage, stun, push, EX) && (fighter->isValidCombo(combo) &&
+						(combo.size() > 2 || combo.back()->hasAnyType(MoveData::kMVT_TargetCombo)) && combo.back()->blockAdv() > -3 && (combo.back()->hitAdv(MoveData::kHAT_Raw) > 2 || combo.back()->canCancel())))
+						confirm_combos_final.push(combo);
+					--task_count;
+				});
 			}
+			printLoc(25, 1, string(6, ' '));
+			printLoc(25, 1, confirm_combos_working.unsafe_size());
+			printLoc(25, 2, string(6, ' '));
+			printLoc(25, 2, confirm_combos_final.unsafe_size());
 		}
-		int damage = 0, stun = 0, push = 0, EX = 3;
-		if (CalculateComboMetrics(*i, damage, stun, push, EX) && (fighter->isValidCombo(*i) &&
-			(i->size() > 2 || i->back()->hasAnyType(MoveData::kMVT_TargetCombo)) && i->back()->blockAdv() > -3 && (i->back()->hitAdv(MoveData::kHAT_Raw) > 2 || i->back()->canCancel())))
-			confirm_combos_final.push(*i);
-		confirm_combos_working.pop();
-		if (!confirm_combos_working.empty())
-			i = &confirm_combos_working.front();
-		printLoc(25, 1, string(6,' '));
-		printLoc(25, 1, confirm_combos_working.size());
-		printLoc(25, 2, string(6,' '));
-		printLoc(25, 2, confirm_combos_final.size());
-	}
+	});
 }
 
 void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 	clearConsole(WHOLE_CONSOLE);
 	cout << "==Basic Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList basic_combos_working;
-	for (auto i = fighter->_moves.begin(); i != fighter->_moves.end(); ++i) {
-		if ((i->hitAdv() > 2 &&
-				!i->isKnockDown()) ||
-				i->canCancel()) {
+	parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(),
+			[&basic_combos_working, &basic_combos_final, &fighter](auto& i) {
+		if ((i.hitAdv() > 2 &&
+				!i.isKnockDown()) ||
+				i.canCancel()) {
 			Combo temp;
-			temp.push_back(&*i);
+			temp.push_back(&i);
 			if(fighter->isValidCombo(temp))
 				basic_combos_working.push(temp);
 		}
-	}
-	for (auto* i = &basic_combos_working.front(); !basic_combos_working.empty();){
-		bool added = false;
-		for (auto j = fighter->_moves.begin(); j != fighter->_moves.end(); ++j) {
-			if (!i->back()->isKnockDown(true) && !i->back()->hasAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow) &&
-				(j->notAllTypes(MoveData::kMVT_AirThrow) || (j->hasAnyType(MoveData::kMVT_AirThrow) && i->back()->hasAnyType(MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack | MoveData::kMVT_Reset))) &&
-				(j->notAllTypes(MoveData::kMVT_Air) || i->back()->canCancelInto(MoveData::kMVT_Air)) &&
-					(i->back()->notAllTypes(MoveData::kMVT_KnockBack) || (i->back()->hasAnyType(MoveData::kMVT_KnockBack) && j->hasAnyType(MoveData::kMVT_Dash | MoveData::kMVT_Projectile))) &&
-					(i->back()->notAllTypes(MoveData::kMVT_Jump) || (i->back()->hasAnyType(MoveData::kMVT_Jump) && j->hasAnyType(MoveData::kMVT_Air))) &&
-					j->notAllTypes(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) &&
-					((i->back()->canCancelInto(*j) && i->back()->hitAdv(true) >= j->startup)|| 
-					((j->notAllTypes(MoveData::kMVT_Dash) || (j->hasAnyType(MoveData::kMVT_Dash) && i->back()->hitAdv() + j->hitAdv() + j->startup > 2)) &&
-						((i->back()->notAllTypes(MoveData::kMVT_Dash) && i->back()->hitAdv() >= j->startup) ||
-							(i->size() > 1 &&  i->back()->hasAnyType(MoveData::kMVT_Dash) && i->back()->hitAdv() + (++*(i->rbegin()))->hitAdv() >= j->startup)))) &&
-					(!(i->back()->isReset() || i->back()->isKnockDown()) || j->notAllTypes(MoveData::kMVT_Throw))) {
-				Combo temp = *i;
-				temp.push_back(&*j);
-				if(fighter->isValidCombo(temp)){
-					int damage = 0, stun = 0, push = 0, EX = 3;
-					if (!CalculateComboMetrics(temp, damage, stun, push, EX))
-						continue;
-					if (temp.size() > 1 && temp.size() < 10 && damage < 250 && stun < 900 &&
-						((j->notAllTypes(MoveData::kMVT_Dash) || 
-							(j->hasAnyType(MoveData::kMVT_Dash) && j->hitAdv() + i->back()->hitAdv() > 2)))){
-						basic_combos_working.push(temp);
-						added = true;
+	});
+	atomic<unsigned int> task_count = 0;
+	task_group group;
+	group.run_and_wait([&group, &task_count, &basic_combos_working, &basic_combos_final, &fighter] { // create task spooler
+		while (task_count > 0 || !basic_combos_working.empty()) {
+			Combo combo;
+			if (basic_combos_working.try_pop(combo)) {
+				++task_count;
+				group.run([&, combo] {
+					atomic<bool> added = false;
+					parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(), [&](auto &j) {
+						if (!combo.back()->isKnockDown(true) && combo.back()->notAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow) && // last move wasn't hard KD or throw
+							(j.notAllTypes(MoveData::kMVT_AirThrow) || combo.back()->hasAnyType(MoveData::kMVT_Reset)) && // only air throw out of a reset (unlikely)
+							(j.notAllTypes(MoveData::kMVT_Air) || combo.back()->canCancelInto(MoveData::kMVT_Air)) && // only cancel into an air move, can't link air->air
+							(combo.back()->notAllTypes(MoveData::kMVT_KnockBack) || j.hasAnyType(MoveData::kMVT_Dash | MoveData::kMVT_Projectile)) && // only go to projectile or dash from knockback
+							(combo.back()->notAllTypes(MoveData::kMVT_Jump) || j.hasAnyType(MoveData::kMVT_Air)) && // only go from jump -> air
+							j.notAnyType(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA) && // don't include VT, VR, or CA in basic combos
+							((combo.back()->canCancelInto(j) && combo.back()->hitAdv(true) >= j.startup) || // cancel if possible
+								((j.notAllTypes(MoveData::kMVT_Dash) || combo.back()->hitAdv() + j.hitAdv() + j.startup > 2) && // check if this move is possible if it's a dash
+									((combo.back()->notAllTypes(MoveData::kMVT_Dash) && combo.back()->hitAdv() >= j.startup) || // check adv if last move wasn't dash
+										(combo.back()->hasAllTypes(MoveData::kMVT_Dash) && // if it was a dash...
+										combo.size() > 1 && // ...and there was a move before it...
+										combo.back()->hitAdv() + (*(++combo.rbegin()))->hitAdv() >= j.startup))))) { // ...check adv
+							Combo temp = combo;
+							temp.push_back(&j);
+							if (fighter->isValidCombo(temp)) {
+								int damage = 0, stun = 0, push = 0, EX = 3;
+								if (CalculateComboMetrics(temp, damage, stun, push, EX)) {
+									if (temp.size() > 1 && temp.size() < 10 && damage < 250 && stun < 900 &&
+										(j.notAllTypes(MoveData::kMVT_Dash) || j.hitAdv() + combo.back()->hitAdv() > 2)) {
+										basic_combos_working.push(temp);
+										added = true;
+									}
+									else if ((damage >= 250 || stun >= 900 || j.isKnockDown() ||	(combo.back()->isKnockDown() && j.isReset())) &&
+										(j.notAllTypes(MoveData::kMVT_Dash) ||(j.hitAdv() + combo.back()->hitAdv() > -3))) {
+										basic_combos_final.push(temp);
+									}
+								}
+							}
+						}
+					});
+					if (fighter->isValidCombo(combo)) {
+						int damage = 0, stun = 0, push = 0, EX = 3;
+						if (!CalculateComboMetrics(combo, damage, stun, push, EX) && combo.size() > 1 && !added &&
+							((damage >= 250 || stun >= 900 || combo.back()->isKnockDown() || ((*(++combo.rbegin()))->isKnockDown() && combo.back()->isReset())) &&
+							(combo.back()->notAllTypes(MoveData::kMVT_Dash) || (combo.back()->hitAdv() + (*(++combo.rbegin()))->hitAdv() > -3))))
+							basic_combos_final.push(combo);
 					}
-					else if (temp.size() < 11 && 
-						(damage >= 250 || stun >= 900 || j->isKnockDown() || 
-							(i->back()->isKnockDown() && j->isReset())) &&
-						( (j->notAllTypes(MoveData::kMVT_Dash) || 
-							(temp.size() > 1 && j->hasAnyType(MoveData::kMVT_Dash) &&
-								(j->hitAdv() + i->back()->hitAdv() > -3))))){
-						basic_combos_final.push(temp);
-					}
-				}
+					--task_count;
+				});
 			}
+			printLoc(25, 1, string(6, ' '));
+			printLoc(25, 1, basic_combos_working.unsafe_size());
+			printLoc(25, 2, string(6, ' '));
+			printLoc(25, 2, basic_combos_final.unsafe_size());
 		}
-		if(fighter->isValidCombo(*i)){
-			int damage = 0, stun = 0, push = 0, EX = 3;
-			if (!CalculateComboMetrics(*i, damage, stun, push, EX) && i->size() > 1 && !added && 
-					((damage >= 250 || stun >= 900 || i->back()->isKnockDown() ||
-						((++*(i->rbegin()))->isKnockDown() && i->back()->isReset())) &&
-						(
-							(i->back()->notAllTypes(MoveData::kMVT_Dash) ||
-							(i->back()->hasAnyType(MoveData::kMVT_Dash) &&
-								(i->back()->hitAdv() + (++*(i->rbegin()))->hitAdv() > -3))))))
-				basic_combos_final.push(*i);
-		}
-		basic_combos_working.pop();
-		if (!basic_combos_working.empty())
-			i = &basic_combos_working.front();
-		printLoc(25, 1, string(6, ' '));
-		printLoc(25, 1, basic_combos_working.size());
-		printLoc(25, 2, string(6, ' '));
-		printLoc(25, 2, basic_combos_final.size());
-	}
+	});
 }
 
 void outputComboList(ComboList combos, const string& header, ostream& output = cout) {
 	int count = 0;
 	output << header << endl;
-	for (auto* i = &combos.front(); !combos.empty();) {
+	for (Combo i;combos.try_pop(i);) {
 		const MoveData* last_move;
 		int damage = 0, stun = 0;
 		float scaling = 1.0f;
-		for (auto j = i->begin(); j != i->end(); ++j) {
-			if (j != i->begin()) {
+		for (auto j = i.begin(); j != i.end(); ++j) {
+			if (j != i.begin()) {
 				if (last_move->canCancelInto(**j))
 					output << " xx ";
-				else if (last_move->hitAdv() < (*j)->startup)
+				else if (last_move->hitAdv() < (*j)->startup && last_move->notAnyType(MoveData::kMVT_Dash))
 					output << " [FT] ";
 				else
 					output << ", ";
@@ -188,16 +199,16 @@ void outputComboList(ComboList combos, const string& header, ostream& output = c
 			stun += (*j)->stun;
 			scaling -= 0.1f;
 		}
-		if (damage > WHOLE_CONSOLE)
+		if (damage > 1000)
 			output << " - Fatal";
 		else {
 			if (damage > 900)
 				output << " - Possible Fatal";
-			if (stun > WHOLE_CONSOLE)
+			if (stun > 1000)
 				output << " - Stun";
 			else if (stun > 900)
 				output << " - Possible Stun";
-			if (last_move->isReset() && (++*(i->rbegin()))->isKnockDown())
+			if (last_move->isReset() && (++*(i.rbegin()))->isKnockDown())
 				output << " - Vortex";
 			else if (last_move->hasAnyType(MoveData::kMVT_HardKnockDown))
 				output << " - Hard Knockdown";
@@ -210,9 +221,6 @@ void outputComboList(ComboList combos, const string& header, ostream& output = c
 			clearConsole(WHOLE_CONSOLE);
 			output << header << endl;
 		}
-		combos.pop();
-		if (!combos.empty())
-			i = &combos.front();
 	}
 	if (&output == &cout)
 		pauseConsole();
@@ -238,8 +246,8 @@ int main()
 		file.close();
 	}
 	pauseConsole();
-	clearConsole(100);
-
+	clearConsole(WHOLE_CONSOLE);
+	
 	// Generate Basic Combos
 	ComboList basic_combos;
 	GenerateBasicCombos(basic_combos, &ninja);
@@ -249,8 +257,8 @@ int main()
 		file.close();
 	}
 	pauseConsole();
-	clearConsole(100);
-
+	clearConsole(WHOLE_CONSOLE);
+	
 	// Generate VTC Combos
 
 	// Generate Combos into CA
@@ -258,9 +266,9 @@ int main()
 	// Generate Confirmed Combos
 
 	// Print Results
-	clearConsole(100);
+	clearConsole(WHOLE_CONSOLE);
 	outputComboList(confirm_combos, "==Hit Confirm Strings < 5 Moves==");
-	clearConsole(100);
+	clearConsole(WHOLE_CONSOLE);
 	outputComboList(basic_combos, "==Basic Combos==");
 	return 0;
 }

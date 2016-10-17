@@ -65,10 +65,10 @@ struct MoveData {
 	short hitAdvVTC(HitAdvantageType hat_type = kHAT_Raw) const;
 
 	inline bool hasAnyType(unsigned int mask) const { return (type & mask) != 0; }
-	inline bool notAnyType(unsigned int mask) const { return (type & mask) != type; }
+	inline bool notAnyType(unsigned int mask) const { return (type & mask) == 0; }
 
 	inline bool hasAllTypes(unsigned int mask) const { return (type & mask) == mask; }
-	inline bool notAllTypes(unsigned int mask) const { return (type & mask) == 0; }
+	inline bool notAllTypes(unsigned int mask) const { return (type & mask) != mask; }
 
 	MoveData();
 	MoveData::MoveData(
@@ -96,5 +96,5 @@ private:
 };
 
 typedef std::list<const MoveData*> Combo;
-typedef std::queue<Combo> ComboList;
+typedef concurrency::concurrent_queue<Combo> ComboList;
 bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& stun, int& push, int& EX);
