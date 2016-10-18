@@ -52,7 +52,7 @@ void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
 	cout << "==Confirm Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList confirm_combos_working;
 	parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(),
-			[&](auto& i) {
+			[&](MoveData& i) {
 		++task_count;
 		updateMaxTasks(task_count);
 		if (i.blockAdv() > -3 &&
@@ -76,7 +76,7 @@ void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
 			++task_count;
 			updateMaxTasks(task_count);
 			group.run([&, combo] {
-				parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(), [&] (auto &j){
+				parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(), [&] (MoveData &j){
 					if (((j.hasAnyType(MoveData::kMVT_Air)) == 0 || combo.back()->canCancelInto(MoveData::kMVT_Air)) && // only allow air follow up if it's cancelled into
 						!j.isWhiffable() && // don't hit confirm with whiffables
 						j.notAllTypes(MoveData::kMVT_VT | MoveData::kMVT_VR | MoveData::kMVT_CA | MoveData::kMVT_EX) && // dont' waste EX, V, or CA on hit confirms
@@ -119,7 +119,7 @@ void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 	cout << "==Basic Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList basic_combos_working;
 	parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(),
-			[&](auto& i) {
+			[&](MoveData& i) {
 		++task_count;
 		updateMaxTasks(task_count);
 		if ((i.hitAdv() > 2 &&
@@ -140,7 +140,7 @@ void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 			updateMaxTasks(task_count);
 			group.run([&, combo] {
 				bool added = false;
-				parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(), [&](auto &j) {
+				parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(), [&](MoveData &j) {
 					if (!combo.back()->isKnockDown(true) && combo.back()->notAnyType(MoveData::kMVT_Throw | MoveData::kMVT_AirThrow) && // last move wasn't hard KD or throw
 						(j.notAllTypes(MoveData::kMVT_AirThrow) || combo.back()->hasAnyType(MoveData::kMVT_Reset)) && // only air throw out of a reset (unlikely)
 						(j.notAllTypes(MoveData::kMVT_Air) || combo.back()->canCancelInto(MoveData::kMVT_Air)) && // only cancel into an air move, can't link air->air
