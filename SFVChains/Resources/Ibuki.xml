@@ -1,0 +1,533 @@
+<!--This is Ibuki's movelist.-->
+<MoveList Name="Ibuki">
+    <Move Name="stand LP" Startup="3" Recovery="8" BlockAdvantage="2" HitAdvantage="3" Damage="30" Stun="70">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Basic/>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="stand MP" Startup="5" Recovery="10" BlockAdvantage="2" HitAdvantage="4" Damage="60" Stun="100">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="stand HP" Startup="12" Recovery="19" BlockAdvantage="-5" HitAdvantage="0" Damage="80" Stun="150">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="stand LK" Startup="4" Recovery="9" BlockAdvantage="-2" HitAdvantage="0" Damage="30" Stun="70">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="stand MK" Startup="5" Recovery="15" BlockAdvantage="-1" HitAdvantage="0" Damage="60" Stun="100">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="stand HK" Startup="10" Recovery="16" BlockAdvantage="-2" HitAdvantage="1" Damage="90" Stun="150">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="crouch LP" Startup="4" Recovery="8" BlockAdvantage="1" HitAdvantage="3" Damage="30" Stun="70">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Basic/>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="crouch MP" Startup="6" Recovery="12" BlockAdvantage="-1" HitAdvantage="3" Damage="60" Stun="100">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="crouch HP" Startup="9" Recovery="16" BlockAdvantage="-3" HitAdvantage="2" Damage="90" Stun="150">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="crouch LK" Startup="4" Recovery="8" BlockAdvantage="1" HitAdvantage="3" Damage="20" Stun="70">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="crouch MK" Startup="6" Recovery="16" BlockAdvantage="-3" HitAdvantage="0" Damage="60" Stun="100">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="crouch HK" Startup="8" Recovery="24" BlockAdvantage="-12" HitAdvantage="67" Damage="100" Stun="150">
+        <Types>
+            <Basic/>
+            <HardKnockDown/>
+            <KnockDown/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="6MK" Startup="28" Recovery="16" BlockAdvantage="-2" HitAdvantage="3" Damage="70" Stun="100">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="6HK" Startup="14" Recovery="16" BlockAdvantage="-3" HitAdvantage="2" Damage="90" Stun="150">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="3MK" Startup="7" Recovery="14" BlockAdvantage="-10" HitAdvantage="-6" Damage="50" Stun="100">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="4MP" Startup="7" Recovery="11" BlockAdvantage="-1" HitAdvantage="4" Damage="40" Stun="70">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="4MP 2" Startup="11" Recovery="9" BlockAdvantage="0" HitAdvantage="4" Damage="30" Stun="50">
+        <Types>
+            <Basic/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="TC 5LP 5MP" Startup="3" Recovery="15" BlockAdvantage="-8" HitAdvantage="-5" Damage="40" Stun="50">
+        <Types>
+            <Basic/>
+            <TargetCombo/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="TC 5LP 5MP 5HP" Startup="3" Recovery="16" BlockAdvantage="-5" HitAdvantage="0" Damage="50" Stun="70">
+        <Types>
+            <Basic/>
+            <TargetCombo/>
+        </Types>
+        <Cancels>
+            <Special/>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="TC 5LP 5MP 5LK" Startup="3" Recovery="15" BlockAdvantage="-2" HitAdvantage="1" Damage="30" Stun="50">
+        <Types>
+            <Basic/>
+            <TargetCombo/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="TC 5MK 2HK" Startup="5" Recovery="23" BlockAdvantage="-12" HitAdvantage="68" Damage="60" Stun="60">
+        <Types>
+            <Basic/>
+            <HardKnockDown/>
+            <KnockDown/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="TC 5MK 2HK 5HK" Startup="5" Recovery="17" BlockAdvantage="0" HitAdvantage="17" Damage="40" Stun="60">
+        <Types>
+            <Basic/>
+            <TargetCombo/>
+            <KnockDown/>
+            <Whiff/>
+            <Reset/>
+        </Types>
+        <Cancels>
+            <VT/>
+        </Cancels>
+    </Move>
+    <Move Name="TC 2MP 6HK" Startup="6" Recovery="23" BlockAdvantage="-5" HitAdvantage="0" Damage="70" Stun="100">
+        <Types>
+            <Basic/>
+            <TargetCombo/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="TC 5MP 6MK" Startup="5" Recovery="16" BlockAdvantage="-2" HitAdvantage="5" Damage="70" Stun="100">
+        <Types>
+            <Basic/>
+            <TargetCombo/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="jump LP" Startup="3" Recovery="0" BlockAdvantage="3" HitAdvantage="6" Damage="40" Stun="70">
+        <Types>
+            <Air/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="jump MP" Startup="5" Recovery="0" BlockAdvantage="7" HitAdvantage="10" Damage="60" Stun="100">
+        <Types>
+            <Air/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="jump HP" Startup="9" Recovery="0" BlockAdvantage="9" HitAdvantage="12" Damage="90" Stun="150">
+        <Types>
+            <Air/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="jump LK" Startup="3" Recovery="0" BlockAdvantage="2" HitAdvantage="5" Damage="40" Stun="70">
+        <Types>
+            <Air/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="jump MK" Startup="6" Recovery="0" BlockAdvantage="5" HitAdvantage="8" Damage="60" Stun="100">
+        <Types>
+            <Air/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="jump HK" Startup="8" Recovery="0" BlockAdvantage="8" HitAdvantage="11" Damage="90" Stun="150">
+        <Types>
+            <Air/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="TC 8LP 8MK" Startup="3" Recovery="3" BlockAdvantage="3" HitAdvantage="6" Damage="70" Stun="50">
+        <Types>
+            <Air/>
+            <TargetCombo/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="TC 8HP 8HK" Startup="9" Recovery="9" BlockAdvantage="9" HitAdvantage="12" Damage="70" Stun="50">
+        <Types>
+            <Air/>
+            <TargetCombo/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="THROW" Startup="5" Recovery="18" BlockAdvantage="64" HitAdvantage="64" Damage="120" Stun="170">
+        <Types>
+            <Throw/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="THROW BACK" Startup="5" Recovery="18" BlockAdvantage="78" HitAdvantage="78" Damage="130" Stun="170">
+        <Types>
+            <Throw/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="THROW AIR" Startup="5" Recovery="18" BlockAdvantage="110" HitAdvantage="110" Damage="140" Stun="150">
+        <Types>
+            <Air/>
+            <AirThrow/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="VT" Startup="1" Recovery="5" BlockAdvantage="0" HitAdvantage="0" Damage="100" Stun="100">
+        <Types>
+            <VT/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="VS" Startup="15" Recovery="20" BlockAdvantage="-5" HitAdvantage="85" Damage="60" Stun="100">
+        <Types>
+            <VS/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="VS HOLD" Startup="25" Recovery="18" BlockAdvantage="-2" HitAdvantage="87" Damage="80" Stun="150">
+        <Types>
+            <VS/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="VR" Startup="15" Recovery="25" BlockAdvantage="-2" HitAdvantage="88" Damage="60" Stun="0">
+        <Types>
+            <VR/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Forward Dash" Startup="3" Recovery="4" BlockAdvantage="-17" HitAdvantage="-17" Damage="0" Stun="0">
+        <Types>
+            <Dash/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Back Dash" Startup="3" Recovery="4" BlockAdvantage="-21" HitAdvantage="-21" Damage="0" Stun="0">
+        <Types>
+            <Air/>
+            <Dash/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Nobusuma" Startup="21" Recovery="31" BlockAdvantage="-32" HitAdvantage="-32" Damage="0" Stun="0">
+        <Types>
+            <Air/>
+            <Dash/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kasumigake LK" Startup="3" Recovery="4" BlockAdvantage="-21" HitAdvantage="-21" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+            <Dash/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kasumigake MK" Startup="3" Recovery="1" BlockAdvantage="-23" HitAdvantage="-23" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+            <Dash/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kasumigake HK" Startup="7" Recovery="4" BlockAdvantage="-57" HitAdvantage="-57" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+            <Dash/>
+            <Jump/>
+        </Types>
+        <Cancels>
+            <Air/>
+            <AirThrow/>
+        </Cancels>
+    </Move>
+    <Move Name="Kazekiri LK" Startup="3" Recovery="34" BlockAdvantage="-27" HitAdvantage="81" Damage="120" Stun="150">
+        <Types>
+            <Special/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels>
+            <CA/>
+        </Cancels>
+    </Move>
+    <Move Name="Kazekiri MK" Startup="4" Recovery="34" BlockAdvantage="-27" HitAdvantage="81" Damage="120" Stun="150">
+        <Types>
+            <Special/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels>
+            <CA/>
+        </Cancels>
+    </Move>
+    <Move Name="Kazekiri HK" Startup="5" Recovery="34" BlockAdvantage="-27" HitAdvantage="81" Damage="120" Stun="150">
+        <Types>
+            <Special/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels>
+            <CA/>
+        </Cancels>
+    </Move>
+    <Move Name="Kazekiri EX" Startup="4" Recovery="37" BlockAdvantage="-31" HitAdvantage="85" Damage="120" Stun="150">
+        <Types>
+            <Special/>
+            <EX/>
+            <KnockBack/>
+            <KnockDown/>
+            <Jump/>
+        </Types>
+        <Cancels>
+            <CA/>
+            <Air/>
+        </Cancels>
+    </Move>
+    <Move Name="Raida LP" Startup="7" Recovery="30" BlockAdvantage="-12" HitAdvantage="79" Damage="100" Stun="200">
+        <Types>
+            <Special/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Raida MP" Startup="7" Recovery="30" BlockAdvantage="-12" HitAdvantage="77" Damage="110" Stun="200">
+        <Types>
+            <Special/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Raida HP" Startup="7" Recovery="30" BlockAdvantage="-12" HitAdvantage="79" Damage="120" Stun="200">
+        <Types>
+            <Special/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Raida EX" Startup="7" Recovery="27" BlockAdvantage="-11" HitAdvantage="79" Damage="150" Stun="200">
+        <Types>
+            <Special/>
+            <EX/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai P" Startup="10" Recovery="23" BlockAdvantage="-2" HitAdvantage="2" Damage="40" Stun="50">
+        <Types>
+            <Special/>
+            <Projectile/>
+        </Types>
+        <Cancels>
+            <CA/>
+        </Cancels>
+    </Move>
+    <Move Name="Kunai EX" Startup="7" Recovery="40" BlockAdvantage="18" HitAdvantage="110" Damage="60" Stun="100">
+        <Types>
+            <Special/>
+            <EX/>
+            <KnockBack/>
+            <KnockDown/>
+            <Projectile/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Airborne Kunai P" Startup="7" Recovery="13" BlockAdvantage="-2" HitAdvantage="2" Damage="40" Stun="50">
+        <Types>
+            <Special/>
+            <Air/>
+            <Projectile/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Airborne Kunai EX" Startup="7" Recovery="13" BlockAdvantage="18" HitAdvantage="110" Damage="70" Stun="100">
+        <Types>
+            <Special/>
+            <Air/>
+            <KnockBack/>
+            <KnockDown/>
+            <Projectile/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai Ikkinage" Startup="11" Recovery="26" BlockAdvantage="9" HitAdvantage="110" Damage="150" Stun="150">
+        <Types>
+            <Special/>
+            <KnockDown/>
+            <Projectile/>
+        </Types>
+        <Cancels>
+            <CA/>
+        </Cancels>
+    </Move>
+    <Move Name="Airborne Kunai Ikkinage" Startup="16" Recovery="0" BlockAdvantage="0" HitAdvantage="0" Damage="150" Stun="150">
+        <Types>
+            <Special/>
+            <Air/>
+            <KnockDown/>
+            <Projectile/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai Hoju K 1" Startup="11" Recovery="43" BlockAdvantage="-54" HitAdvantage="-54" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai Hoju K 2" Startup="24" Recovery="43" BlockAdvantage="-74" HitAdvantage="-74" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai Hoju K 3" Startup="36" Recovery="43" BlockAdvantage="-82" HitAdvantage="-82" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai Hoju K 4" Startup="48" Recovery="43" BlockAdvantage="-99" HitAdvantage="-99" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai Hoju K 5" Startup="60" Recovery="43" BlockAdvantage="-103" HitAdvantage="-103" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Kunai Hoju K 6" Startup="72" Recovery="43" BlockAdvantage="-115" HitAdvantage="-115" Damage="0" Stun="0">
+        <Types>
+            <Special/>
+        </Types>
+        <Cancels/>
+    </Move>
+    <Move Name="Critical Art - Kachofugetsu" Startup="5" Recovery="17" BlockAdvantage="-20" HitAdvantage="110" Damage="350" Stun="0">
+        <Types>
+            <CA/>
+            <HardKnockDown/>
+            <KnockBack/>
+            <KnockDown/>
+        </Types>
+        <Cancels/>
+    </Move>
+</MoveList>
