@@ -90,4 +90,4 @@ private:
 
 typedef std::list<const MoveData*> Combo;
 typedef concurrency::concurrent_queue<Combo> ComboList;
-bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& stun, int& push, int& EX);
+bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& stun, int& push, int& EX, float& scaling);

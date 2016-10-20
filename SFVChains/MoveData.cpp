@@ -52,9 +52,8 @@ short MoveData::hitAdv(bool cancel, HitAdvantageType hat_type) const {
 	return adv;
 }
 
-bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& stun, int& push, int& EX)
+bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& stun, int& push, int& EX, float& scaling)
 {
-	float scaling = 1.0f;
 	for (auto k = combo.begin(); EX >= 0 && k != combo.end(); ++k) {
 		damage += int((*k)->damage * ((*k)->hasAllTypes(MoveData::kMVT_CA) ? MAX(.5f, scaling) : scaling));
 		scaling -= 0.1f;
@@ -67,13 +66,16 @@ bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& 
 		if ((*k)->hasAnyType(MoveData::kMVT_EX) && --EX < 0) // have we used up all out EX stock?
 			return false;
 		if ((*k)->hasAnyType(MoveData::kMVT_TargetCombo)) { // grab all move push from TCs
+			scaling += 0.1f; // re-calculate scaling for TC
 			int tc_push = 0;
-			for (string::size_type start = (*k)->name.find("L"); start != (*k)->name.npos; start = (*k)->name.find("L", ++start))
+			for (string::size_type start = (*k)->name.find('L'); start != (*k)->name.npos; start = (*k)->name.find('L', ++start))
 				tc_push += 2;
-			for (string::size_type start = (*k)->name.find("M"); start != (*k)->name.npos; start = (*k)->name.find("M", ++start))
+			for (string::size_type start = (*k)->name.find('M'); start != (*k)->name.npos; start = (*k)->name.find('M', ++start))
 				tc_push += 3;
-			for (string::size_type start = (*k)->name.find("H"); start != (*k)->name.npos; start = (*k)->name.find("H", ++start))
+			for (string::size_type start = (*k)->name.find('H'); start != (*k)->name.npos; start = (*k)->name.find('H', ++start))
 				tc_push -= 1;
+			for (string::size_type start = (*k)->name.find(' '); start != (*k)->name.npos; start = (*k)->name.find(' ', ++start))
+				scaling -= 0.1f;
 			push += tc_push / 2; // TC's actually push a lot less than linked combos
 			if (push > 5) // did we get too far away during TC?
 				return false;
@@ -86,14 +88,18 @@ bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& 
 			if ((*k)->name.find("H") != (*k)->name.npos)
 				push -= 1;
 		}
-		else if ((*k)->hasAnyType(MoveData::kMVT_Dash)) // remove a lot of push for dashes
-			push -= 10;
+		else if ((*k)->hasAnyType(MoveData::kMVT_Dash))
+		{
+			push -= 10; // remove a lot of push for dashes
+			scaling += 0.1f; // replace loast scaling for dash
+		}
 		// remove moderate push for non-projectile specials
 		else if((*k)->notAnyType(MoveData::kMVT_Projectile) &&
 			(*k)->hasAnyType(MoveData::kMVT_Special | MoveData::kMVT_VS | MoveData::kMVT_CA | MoveData::kMVT_VR))
 			push = -6;
 		if ((*k)->hasAnyType(MoveData::kMVT_KnockBack)) // account for knockbacks
 			push += 10;
+		scaling = MAX(scaling, 0.1f); // scaling can't go below 10%
 	}
 	return true;
 }

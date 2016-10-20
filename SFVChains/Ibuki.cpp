@@ -42,7 +42,7 @@ Ibuki::Ibuki() : iCharacter() {
 	_moves.push_back(MoveData("VS", 15, 20, -5, 85, 60, 100, MoveData::kMVT_VS | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
 	_moves.push_back(MoveData("VS HOLD", 25, 18, -2, 87, 80, 150, MoveData::kMVT_VS | MoveData::kMVT_KnockDown | MoveData::kMVT_KnockBack, NULL));
 	_moves.push_back(MoveData("VR", 15, 25, -2, 88, 60, 0, MoveData::kMVT_KnockDown | MoveData::kMVT_VR, NULL));
-	_moves.push_back(MoveData("Forward Dash", 3, 4, -17, -17, 0, 0, MoveData::kMVT_Dash, NULL));					 // Startup/recover on dashes is guessed based on Kasumigake
+	_moves.push_back(MoveData("Forward Dash", 3, 4, -17, -17, 0, 0, MoveData::kMVT_Dash, NULL)); // Startup/recover on dashes is guessed based on Kasumigake
 	_moves.push_back(MoveData("Back Dash", 3, 4, -21, -21, 0, 0, MoveData::kMVT_Air | MoveData::kMVT_Dash, NULL)); // Startup/recover on dashes is guessed based on Kasumigake
 	_moves.push_back(MoveData("Nobusuma", 21, 31, -32, -32, 0, 0, MoveData::kMVT_Air | MoveData::kMVT_Dash, NULL));
 	_moves.push_back(MoveData("Kasumigake LK", 3, 4, -21, -21, 0, 0, MoveData::kMVT_Special | MoveData::kMVT_Dash, NULL));
@@ -76,8 +76,12 @@ Ibuki::Ibuki() : iCharacter() {
 	int kunai = 6;
 	for (auto i = combo.begin(); i != combo.end(); ++i) {
 		// check kunai inventory
-		if ((*i)->name.find("Ikkinage") != (*i)->name.npos)
-			kunai = 0;
+		if ((*i)->name.find("Ikkinage") != (*i)->name.npos) {
+			if (kunai > 0)
+				kunai = 0;
+			else
+				return false;
+		}
 		else if ((*i)->name.find("Hoju") != (*i)->name.npos)
 			kunai = MIN(6, kunai + (*i)->name.back() - '0');
 		else if ((*i)->name.find("Kunai") != (*i)->name.npos)
