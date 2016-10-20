@@ -38,6 +38,7 @@ struct MoveData {
 		kMVT_Reset = 65536,
 		kMVT_Jump = 131072,
 		kMVT_Projectile = 262144,
+		kMVT_MaxFlag = kMVT_Projectile,
 	};
 
 	std::string name;
