@@ -19,6 +19,7 @@
 #include <concurrent_queue.h>
 #include <concurrent_vector.h>
 #include <atomic>
+#include <tinyxml2.h>
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
