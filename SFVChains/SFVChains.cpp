@@ -274,7 +274,7 @@ int main()
 	ComboList basic_combos;
 	GenerateBasicCombos(basic_combos, &ninja);
 	cout << "\nMax tasks queued:\t" << max_tasks << "\nSaving to File...";
-	file.open("Basic Combos.txt", false, ios::out | ios::trunc);
+	file.open("Basic Combos.txt", ios::out | ios::trunc);
 	if (file.is_open()) {
 		outputComboList(basic_combos, false, "==Basic Combos==", file);
 		file.close();
