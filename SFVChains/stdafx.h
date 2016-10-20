@@ -16,6 +16,7 @@
 #include <set>
 #include <queue>
 #include <fstream>
+#include <math.h>
 #include <concurrent_queue.h>
 #include <concurrent_vector.h>
 #include <atomic>
