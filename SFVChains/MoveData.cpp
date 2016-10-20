@@ -8,8 +8,6 @@ MoveData::MoveData() :
 	recovery(0),
 	block_adv(0),
 	hit_adv(0),
-	vtc_block_adv(0),
-	vtc_hit_adv(0),
 	damage(0),
 	stun(0),
 	type((MoveTypes)0),
@@ -21,8 +19,6 @@ MoveData::MoveData(
 		short recovery,
 		short block_adv,
 		short hit_adv,
-		short vtc_block_adv,
-		short vtc_hit_adv,
 		short damage,
 		short stun,
 		unsigned int type,
@@ -33,8 +29,6 @@ MoveData::MoveData(
 	recovery(recovery),
 	block_adv(block_adv),
 	hit_adv(hit_adv),
-	vtc_block_adv(vtc_block_adv),
-	vtc_hit_adv(vtc_hit_adv),
 	damage(damage),
 	stun(stun),
 	type((MoveTypes)type),
@@ -56,19 +50,6 @@ short MoveData::hitAdv(bool cancel, HitAdvantageType hat_type) const {
 	if (cancel)
 		adv -= recovery;
 	return adv;
-}
-
-short MoveData::hitAdvVTC(HitAdvantageType hat_type) const {
-	if (hat_type == kHAT_Raw || this->notAnyType(kMVT_KnockDown | kMVT_KnockBack | kMVT_HardKnockDown | kMVT_Throw | kMVT_AirThrow))
-		return vtc_hit_adv;
-	else if (hat_type == kHAT_Juggle)
-		return vtc_hit_adv - kMVT_KnockDownRecover - kMDC_FallDownFrames;
-	else if (hat_type == kHAT_Recover)
-		return vtc_hit_adv - kMVT_KnockDownRecover;
-	else if (hat_type == kHAT_RecoverBack)
-		return vtc_hit_adv - kMVT_KnockDownRecoverBack;
-	else
-		return vtc_hit_adv;
 }
 
 bool CalculateComboMetrics(const Combo& combo, /*out params*/ int& damage, int& stun, int& push, int& EX)

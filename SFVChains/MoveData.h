@@ -7,12 +7,12 @@ struct MoveData {
 		kMVT_KnockDownRecoverBack = 44, // loss of KD Adv from Back Recovery
 		kMDC_CounterHitAdv = 2,
 		kMDC_FrameTrapGap = 2,
-    kMDC_FallDownFrames = 20,
+		kMDC_FallDownFrames = 20,
 	};
 
 	enum HitAdvantageType {
 		kHAT_Raw,
-    kHAT_Juggle,
+		kHAT_Juggle,
 		kHAT_Recover,
 		kHAT_RecoverBack,
 	};
@@ -61,9 +61,6 @@ struct MoveData {
 	inline short hitAdv(HitAdvantageType hat_type = kHAT_Juggle) const { return hitAdv(false, hat_type); }
 	short hitAdv(bool cancel, HitAdvantageType hat_type = kHAT_Juggle) const;
 	
-	inline short blockAdvVTC() const { return vtc_block_adv ;}
-	short hitAdvVTC(HitAdvantageType hat_type = kHAT_Raw) const;
-
 	inline bool hasAnyType(unsigned int mask) const { return (type & mask) != 0; }
 	inline bool notAnyType(unsigned int mask) const { return (type & mask) == 0; }
 
@@ -77,8 +74,6 @@ struct MoveData {
 		short recovery,
 		short block_adv,
 		short hit_adv,
-		short vtc_block_adv,
-		short vtc_hit_adv,
 		short damage,
 		short stun,
 		unsigned int type,
@@ -91,8 +86,6 @@ private:
 	short hit_adv;
 	unsigned int type;
 	unsigned int cancels;
-	short vtc_block_adv;
-	short vtc_hit_adv;
 };
 
 typedef std::list<const MoveData*> Combo;

@@ -158,12 +158,12 @@ void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 						if (fighter->isValidCombo(temp)) {
 							int damage = 0, stun = 0, push = 0, EX = 3;
 							if (CalculateComboMetrics(temp, damage, stun, push, EX)) {
-								if (temp.size() > 1 && temp.size() < 10 && damage < 250 && stun < 900 &&
+								if (temp.size() > 1 && temp.size() < 10 && damage < 250 && stun < iCharacter::kPossibleStun &&
 									(j.notAllTypes(MoveData::kMVT_Dash) || j.hitAdv() + combo.back()->hitAdv() > 2)) {
 									basic_combos_working.push(temp);
 									added = true;
 								}
-								else if ((damage >= 250 || stun >= 900 || j.isKnockDown() ||	(combo.back()->isKnockDown() && j.isReset())) &&
+								else if ((damage >= 250 || stun >= iCharacter::kPossibleStun || j.isKnockDown() ||	(combo.back()->isKnockDown() && j.isReset())) &&
 									(j.notAllTypes(MoveData::kMVT_Dash) ||(j.hitAdv() + combo.back()->hitAdv() > -3))) {
 									basic_combos_final.push(temp);
 								}
@@ -174,7 +174,7 @@ void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 				if (fighter->isValidCombo(combo)) {
 					int damage = 0, stun = 0, push = 0, EX = 3;
 					if (CalculateComboMetrics(combo, damage, stun, push, EX) && combo.size() > 1 && !added &&
-						((damage >= 250 || stun >= 900 || combo.back()->isKnockDown() || ((*(++combo.rbegin()))->isKnockDown() && combo.back()->isReset())) &&
+						((damage >= 250 || stun >= iCharacter::kPossibleStun || combo.back()->isKnockDown() || ((*(++combo.rbegin()))->isKnockDown() && combo.back()->isReset())) &&
 						(combo.back()->notAllTypes(MoveData::kMVT_Dash) || (combo.back()->hitAdv() + (*(++combo.rbegin()))->hitAdv() > -3))))
 						basic_combos_final.push(combo);
 				}
@@ -214,14 +214,14 @@ void outputComboList(ComboList combos, const string& header, ostream& output = c
 			knockdown = knockdown || (*j)->hasAnyType(MoveData::kMVT_KnockDown | MoveData::kMVT_HardKnockDown);
 		}
 		output << " - " << damage << " Damage, " << stun << " Stun";
-		if (damage > 1000)
+		if (damage > iCharacter::kConfirmedFatal)
 			output << " - Fatal";
 		else {
-			if (damage > 900)
+			if (damage > iCharacter::kPossibleFatal)
 				output << " - Possibly Fatal";
-			if (stun > 1000)
+			if (stun > iCharacter::kConfirmedStun)
 				output << " - Stun";
-			else if (stun > 900)
+			else if (stun > iCharacter::kPossibleStun)
 				output << " - Possibly Stun";
 			if (last_move->isReset() && (++*(i.rbegin()))->isKnockDown())
 				output << " - Vortex";
