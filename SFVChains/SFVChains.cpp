@@ -7,6 +7,7 @@
 #define WHOLE_CONSOLE 10000
 using namespace std;
 using namespace concurrency;
+using namespace tinyxml2;
 atomic<unsigned int> max_tasks = 0;
 void updateMaxTasks(atomic<unsigned int>& new_count) {
 	unsigned int current_max_tasks = max_tasks;

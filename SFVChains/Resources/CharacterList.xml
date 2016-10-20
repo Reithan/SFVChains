@@ -1,0 +1,4 @@
+<!--This is used by SFVChains to store a list of all character data files currently in use.-->
+<CharacterList>
+    <Character Name="Ibuki" File="Ibuki.xml"/>
+</CharacterList>
