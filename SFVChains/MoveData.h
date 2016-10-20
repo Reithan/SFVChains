@@ -41,6 +41,8 @@ struct MoveData {
 		kMVT_MaxFlag = kMVT_Projectile,
 	};
 
+	static const std::string kFlagNames[];
+
 	std::string name;
 	short startup;
 	short recovery;

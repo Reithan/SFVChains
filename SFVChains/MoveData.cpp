@@ -2,6 +2,30 @@
 #include "MoveData.h"
 
 using namespace std;
+
+const string MoveData::kFlagNames[] = {
+	"Nothing",
+	"Basic",
+	"Throw",
+	"Special",
+	"VS",
+	"VT",
+	"VR",
+	"CA",
+	"Air",
+	"TargetCombo",
+	"EX",
+	"AirThrow",
+	"HardKnockDown",
+	"KnockBack",
+	"Dash",
+	"KnockDown",
+	"Whiff",
+	"Reset",
+	"Jump",
+	"Projectile",
+};
+
 MoveData::MoveData() :
 	name(""),
 	startup(0),
