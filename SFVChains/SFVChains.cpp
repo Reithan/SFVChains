@@ -2,7 +2,7 @@
 //
 
 #include "stdafx.h"
-#include "Ibuki.h"
+#include "CharacterFactory.h"
 
 #define WHOLE_CONSOLE 10000
 using namespace std;
@@ -256,43 +256,56 @@ int main()
 	lpCursor.dwSize = 20; //default size
 	SetConsoleCursorInfo(console, &lpCursor);
 
-	Ibuki ninja;
-	fstream file;
+	XMLDocument character_list_file;
+	character_list_file.LoadFile("Resources/CharacterList.xml");
+	auto character_list = character_list_file.RootElement();
+	if (nullptr != character_list) {
+		for (auto character_node = character_list->FirstChildElement("Character");
+				character_node != nullptr;
+				character_node = character_node->NextSiblingElement("Character")) {
+			string char_name = character_node->Attribute("Name");
+			string char_file = character_node->Attribute("File");
+			auto character = CharacterFactory::LoadCharacter(char_name, "Resources/" + char_file);
+			if (nullptr != character) {
+				// Generate Hit Confirms
+				ComboList confirm_combos;
+				GenerateHitConfirms(confirm_combos, character.get());
+				cout << "\nMax tasks queued:\t" << max_tasks << "\nSaving to File...";
+				fstream file;
+				file.open("Hit Confirms.txt", ios::out | ios::trunc);
+				if (file.is_open()) {
+					outputComboList(confirm_combos, true, "===" + char_name + "===\n==Hit Confirm Strings < 5 Moves==", file);
+					file.close();
+				}
+				pauseConsole();
+				clearConsole(WHOLE_CONSOLE);
 
-	// Generate Hit Confirms
-	ComboList confirm_combos;
-	GenerateHitConfirms(confirm_combos, &ninja);
-	cout << "\nMax tasks queued:\t" << max_tasks << "\nSaving to File...";
-	file.open("Hit Confirms.txt", ios::out | ios::trunc);
-	if (file.is_open()) {
-		outputComboList(confirm_combos, true, "==Hit Confirm Strings < 5 Moves==", file);
-		file.close();
+				// Generate Basic Combos
+				ComboList basic_combos;
+				GenerateBasicCombos(basic_combos, character.get());
+				cout << "\nMax tasks queued:\t" << max_tasks << "\nSaving to File...";
+				file.open("Basic Combos.txt", ios::out | ios::trunc);
+				if (file.is_open()) {
+					outputComboList(basic_combos, false, "===" + char_name + "===\nBasic Combos==", file);
+					file.close();
+				}
+				pauseConsole();
+				clearConsole(WHOLE_CONSOLE);
+
+				// Generate VTC Combos
+
+				// Generate Combos into CA
+
+				// Generate Confirmed Combos
+
+				// Print Results
+				clearConsole(WHOLE_CONSOLE);
+				outputComboList(confirm_combos, true, "===" + char_name + "===\nHit Confirm Strings < 5 Moves==");
+				clearConsole(WHOLE_CONSOLE);
+				outputComboList(basic_combos, false, "===" + char_name + "===\nBasic Combos==");
+			}
+		}
+		return 0;
 	}
-	pauseConsole();
-	clearConsole(WHOLE_CONSOLE);
-	
-	// Generate Basic Combos
-	ComboList basic_combos;
-	GenerateBasicCombos(basic_combos, &ninja);
-	cout << "\nMax tasks queued:\t" << max_tasks << "\nSaving to File...";
-	file.open("Basic Combos.txt", ios::out | ios::trunc);
-	if (file.is_open()) {
-		outputComboList(basic_combos, false, "==Basic Combos==", file);
-		file.close();
-	}
-	pauseConsole();
-	clearConsole(WHOLE_CONSOLE);
-	
-	// Generate VTC Combos
-
-	// Generate Combos into CA
-
-	// Generate Confirmed Combos
-
-	// Print Results
-	clearConsole(WHOLE_CONSOLE);
-	outputComboList(confirm_combos, true, "==Hit Confirm Strings < 5 Moves==");
-	clearConsole(WHOLE_CONSOLE);
-	outputComboList(basic_combos, false, "==Basic Combos==");
-	return 0;
+	return 1;
 }

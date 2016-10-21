@@ -9,5 +9,6 @@ struct iCharacter {
 	concurrency::concurrent_vector<MoveData> _moves;
 	iCharacter() {}
 	virtual ~iCharacter() {}
+	bool Initialize(const std::string& character_name, const std::string& filename);
 	virtual bool isValidCombo(const Combo& combo) const = 0;
 };

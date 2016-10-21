@@ -86,6 +86,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CharacterFactory.h" />
     <ClInclude Include="Ibuki.h" />
     <ClInclude Include="iCharacter.h" />
     <ClInclude Include="MoveData.h" />
@@ -93,7 +94,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CharacterFactory.cpp" />
     <ClCompile Include="Ibuki.cpp" />
+    <ClCompile Include="iCharacter.cpp" />
     <ClCompile Include="MoveData.cpp" />
     <ClCompile Include="SFVChains.cpp" />
     <ClCompile Include="stdafx.cpp">

@@ -17,11 +17,13 @@
 #include <queue>
 #include <fstream>
 #include <math.h>
-#include <concurrent_queue.h>
-#include <concurrent_vector.h>
 #include <atomic>
 #include <tinyxml2.h>
 #include <ppl.h>
+#include <memory>
+#include <concurrent_queue.h>
+#include <concurrent_vector.h>
+#include <unordered_map>
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #include <Windows.h>
