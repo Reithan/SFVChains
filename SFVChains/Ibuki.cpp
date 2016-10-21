@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Ibuki.h"
+#include "CharacterFactory.h"
 
+ADD_TO_MAP(Ibuki);
 using namespace tinyxml2;
 Ibuki::Ibuki() : iCharacter() {
 }

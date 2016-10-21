@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "iCharacter.h"
+#include "CharacterFactory.h"
+
+ADD_TO_MAP(iCharacter);
 using namespace std;
 using namespace tinyxml2;
 bool iCharacter::Initialize(const string& character_name, const string& filename) {
