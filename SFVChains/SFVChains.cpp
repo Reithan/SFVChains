@@ -47,10 +47,10 @@ void pauseConsole() {
 	cin.ignore();
 }
 
-void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
+void GenerateHitConfirms(const string& char_name, ComboList& confirm_combos_final, iCharacter* fighter){
 	clearConsole(WHOLE_CONSOLE);
 	atomic<unsigned int> task_count = 0;
-	cout << "==Confirm Combos Processing==\nSeed combos in queue:\nFinal combos:";
+	cout << "===" + char_name + "===\n==Confirm Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList confirm_combos_working;
 	parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(),
 			[&](MoveData& i) {
@@ -108,18 +108,18 @@ void GenerateHitConfirms(ComboList& confirm_combos_final, iCharacter* fighter){
 				--task_count;
 			});
 		}
-		printLoc(25, 1, string(10, ' '));
-		printLoc(25, 1, confirm_combos_working.unsafe_size());
 		printLoc(25, 2, string(10, ' '));
-		printLoc(25, 2, confirm_combos_final.unsafe_size());
+		printLoc(25, 2, confirm_combos_working.unsafe_size());
+		printLoc(25, 3, string(10, ' '));
+		printLoc(25, 3, confirm_combos_final.unsafe_size());
 	}
 	group.wait();
 }
 
-void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
+void GenerateBasicCombos(const string& char_name, ComboList& basic_combos_final, iCharacter* fighter){
 	clearConsole(WHOLE_CONSOLE);
 	atomic<unsigned int> task_count = 0;
-	cout << "==Basic Combos Processing==\nSeed combos in queue:\nFinal combos:";
+	cout << "===" + char_name + "===\n==Basic Combos Processing==\nSeed combos in queue:\nFinal combos:";
 	ComboList basic_combos_working;
 	parallel_for_each(fighter->_moves.begin(), fighter->_moves.end(),
 			[&](MoveData& i) {
@@ -188,10 +188,10 @@ void GenerateBasicCombos(ComboList& basic_combos_final, iCharacter* fighter){
 				--task_count;
 			});
 		}
-		printLoc(25, 1, string(10, ' '));
-		printLoc(25, 1, basic_combos_working.unsafe_size());
 		printLoc(25, 2, string(10, ' '));
-		printLoc(25, 2, basic_combos_final.unsafe_size());
+		printLoc(25, 2, basic_combos_working.unsafe_size());
+		printLoc(25, 3, string(10, ' '));
+		printLoc(25, 3, basic_combos_final.unsafe_size());
 	}
 	group.wait();
 }
@@ -269,7 +269,7 @@ int main()
 			if (nullptr != character) {
 				// Generate Hit Confirms
 				ComboList confirm_combos;
-				GenerateHitConfirms(confirm_combos, character.get());
+				GenerateHitConfirms(char_name, confirm_combos, character.get());
 				cout << "\nMax tasks queued:\t" << max_tasks << "\nSaving to File...";
 				fstream file;
 				file.open("Hit Confirms.txt", ios::out | ios::trunc);
@@ -282,7 +282,7 @@ int main()
 
 				// Generate Basic Combos
 				ComboList basic_combos;
-				GenerateBasicCombos(basic_combos, character.get());
+				GenerateBasicCombos(char_name, basic_combos, character.get());
 				cout << "\nMax tasks queued:\t" << max_tasks << "\nSaving to File...";
 				file.open("Basic Combos.txt", ios::out | ios::trunc);
 				if (file.is_open()) {
@@ -300,9 +300,9 @@ int main()
 
 				// Print Results
 				clearConsole(WHOLE_CONSOLE);
-				outputComboList(confirm_combos, true, "===" + char_name + "===\nHit Confirm Strings < 5 Moves==");
+				outputComboList(confirm_combos, true, "===" + char_name + "===\n==Hit Confirm Strings < 5 Moves==");
 				clearConsole(WHOLE_CONSOLE);
-				outputComboList(basic_combos, false, "===" + char_name + "===\nBasic Combos==");
+				outputComboList(basic_combos, false, "===" + char_name + "===\n==Basic Combos==");
 			}
 		}
 		return 0;
