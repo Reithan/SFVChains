@@ -31,13 +31,14 @@
     <Move Name="stand LK" Startup="4" Recovery="9" BlockAdvantage="-2" HitAdvantage="0" Damage="30" Stun="70">
         <Types>
             <Basic/>
+            <Whiff/>
         </Types>
         <Cancels>
             <Special/>
             <VT/>
         </Cancels>
     </Move>
-    <Move Name="stand MK" Startup="5" Recovery="15" BlockAdvantage="-1" HitAdvantage="0" Damage="60" Stun="100">
+    <Move Name="stand MK" Startup="6" Recovery="14" BlockAdvantage="2" HitAdvantage="5" Damage="60" Stun="100">
         <Types>
             <Basic/>
         </Types>
@@ -48,6 +49,7 @@
     <Move Name="stand HK" Startup="10" Recovery="16" BlockAdvantage="-2" HitAdvantage="1" Damage="90" Stun="150">
         <Types>
             <Basic/>
+            <Whiff/>
         </Types>
         <Cancels>
             <VT/>
@@ -110,6 +112,7 @@
     <Move Name="6MK" Startup="28" Recovery="16" BlockAdvantage="-2" HitAdvantage="3" Damage="70" Stun="100">
         <Types>
             <Basic/>
+            <Whiff/>
         </Types>
         <Cancels/>
     </Move>
@@ -200,10 +203,11 @@
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="TC 5MP 6MK" Startup="5" Recovery="16" BlockAdvantage="-2" HitAdvantage="5" Damage="70" Stun="100">
+    <Move Name="TC 5MP 6MK" Startup="5" Recovery="16" BlockAdvantage="-2" HitAdvantage="6" Damage="70" Stun="100">
         <Types>
             <Basic/>
             <TargetCombo/>
+            <Whiff/>
         </Types>
         <Cancels/>
     </Move>
@@ -257,14 +261,14 @@
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="THROW" Startup="5" Recovery="18" BlockAdvantage="64" HitAdvantage="64" Damage="120" Stun="170">
+    <Move Name="THROW" Startup="5" Recovery="18" BlockAdvantage="64" HitAdvantage="64" Damage="120" Stun="120">
         <Types>
             <Throw/>
             <KnockDown/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="THROW BACK" Startup="5" Recovery="18" BlockAdvantage="78" HitAdvantage="78" Damage="130" Stun="170">
+    <Move Name="THROW BACK" Startup="5" Recovery="18" BlockAdvantage="78" HitAdvantage="78" Damage="140" Stun="200">
         <Types>
             <Throw/>
             <KnockDown/>
@@ -308,7 +312,7 @@
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Forward Dash" Startup="3" Recovery="4" BlockAdvantage="-17" HitAdvantage="-17" Damage="0" Stun="0">
+    <Move Name="Forward Dash" Startup="3" Recovery="3" BlockAdvantage="-16" HitAdvantage="-16" Damage="0" Stun="0">
         <Types>
             <Dash/>
         </Types>
@@ -326,7 +330,10 @@
             <Air/>
             <Dash/>
         </Types>
-        <Cancels/>
+        <Cancels>
+            <Air/>
+            <AirThrow/>
+        </Cancels>
     </Move>
     <Move Name="Kasumigake LK" Startup="3" Recovery="4" BlockAdvantage="-21" HitAdvantage="-21" Damage="0" Stun="0">
         <Types>
@@ -485,43 +492,43 @@
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Kunai Hoju K 1" Startup="11" Recovery="43" BlockAdvantage="-54" HitAdvantage="-54" Damage="0" Stun="0">
+    <Move Name="Kunai Hoju K 1" Startup="11" Recovery="40" BlockAdvantage="-54" HitAdvantage="-54" Damage="0" Stun="0">
         <Types>
             <Special/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Kunai Hoju K 2" Startup="24" Recovery="43" BlockAdvantage="-74" HitAdvantage="-74" Damage="0" Stun="0">
+    <Move Name="Kunai Hoju K 2" Startup="24" Recovery="40" BlockAdvantage="-74" HitAdvantage="-74" Damage="0" Stun="0">
         <Types>
             <Special/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Kunai Hoju K 3" Startup="36" Recovery="43" BlockAdvantage="-82" HitAdvantage="-82" Damage="0" Stun="0">
+    <Move Name="Kunai Hoju K 3" Startup="36" Recovery="40" BlockAdvantage="-82" HitAdvantage="-82" Damage="0" Stun="0">
         <Types>
             <Special/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Kunai Hoju K 4" Startup="48" Recovery="43" BlockAdvantage="-99" HitAdvantage="-99" Damage="0" Stun="0">
+    <Move Name="Kunai Hoju K 4" Startup="48" Recovery="40" BlockAdvantage="-99" HitAdvantage="-99" Damage="0" Stun="0">
         <Types>
             <Special/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Kunai Hoju K 5" Startup="60" Recovery="43" BlockAdvantage="-103" HitAdvantage="-103" Damage="0" Stun="0">
+    <Move Name="Kunai Hoju K 5" Startup="60" Recovery="40" BlockAdvantage="-103" HitAdvantage="-103" Damage="0" Stun="0">
         <Types>
             <Special/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Kunai Hoju K 6" Startup="72" Recovery="43" BlockAdvantage="-115" HitAdvantage="-115" Damage="0" Stun="0">
+    <Move Name="Kunai Hoju K 6" Startup="72" Recovery="40" BlockAdvantage="-115" HitAdvantage="-115" Damage="0" Stun="0">
         <Types>
             <Special/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="Critical Art - Kachofugetsu" Startup="5" Recovery="17" BlockAdvantage="-20" HitAdvantage="110" Damage="350" Stun="0">
+    <Move Name="Critical Art - Kachofugetsu" Startup="5" Recovery="17" BlockAdvantage="-20" HitAdvantage="110" Damage="340" Stun="0">
         <Types>
             <CA/>
             <HardKnockDown/>
