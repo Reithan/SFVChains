@@ -146,7 +146,7 @@
             <VT/>
         </Cancels>
     </Move>
-    <Move Name="TC 5LP 5MP" Startup="3" Recovery="15" BlockAdvantage="-8" HitAdvantage="-5" Damage="40" Stun="50">
+    <Move Name="TC 5LP 5MP" Startup="3" Recovery="15" BlockAdvantage="-8" HitAdvantage="-5" Damage="70" Stun="120">
         <Types>
             <Basic/>
             <TargetCombo/>
@@ -155,7 +155,7 @@
             <VT/>
         </Cancels>
     </Move>
-    <Move Name="TC 5LP 5MP 5HP" Startup="3" Recovery="16" BlockAdvantage="-5" HitAdvantage="0" Damage="50" Stun="70">
+    <Move Name="TC 5LP 5MP 5HP" Startup="3" Recovery="16" BlockAdvantage="-5" HitAdvantage="0" Damage="120" Stun="190">
         <Types>
             <Basic/>
             <TargetCombo/>
@@ -165,7 +165,7 @@
             <VT/>
         </Cancels>
     </Move>
-    <Move Name="TC 5LP 5MP 5LK" Startup="3" Recovery="15" BlockAdvantage="-2" HitAdvantage="1" Damage="30" Stun="50">
+    <Move Name="TC 5LP 5MP 5LK" Startup="3" Recovery="15" BlockAdvantage="-2" HitAdvantage="1" Damage="100" Stun="170">
         <Types>
             <Basic/>
             <TargetCombo/>
@@ -174,7 +174,7 @@
             <VT/>
         </Cancels>
     </Move>
-    <Move Name="TC 5MK 2HK" Startup="5" Recovery="23" BlockAdvantage="-12" HitAdvantage="68" Damage="60" Stun="60">
+    <Move Name="TC 5MK 2HK" Startup="5" Recovery="23" BlockAdvantage="-12" HitAdvantage="68" Damage="120" Stun="160">
         <Types>
             <Basic/>
             <HardKnockDown/>
@@ -184,7 +184,7 @@
             <VT/>
         </Cancels>
     </Move>
-    <Move Name="TC 5MK 2HK 5HK" Startup="5" Recovery="17" BlockAdvantage="0" HitAdvantage="17" Damage="40" Stun="60">
+    <Move Name="TC 5MK 2HK 5HK" Startup="5" Recovery="17" BlockAdvantage="0" HitAdvantage="17" Damage="160" Stun="220">
         <Types>
             <Basic/>
             <TargetCombo/>
@@ -196,14 +196,14 @@
             <VT/>
         </Cancels>
     </Move>
-    <Move Name="TC 2MP 6HK" Startup="6" Recovery="23" BlockAdvantage="-5" HitAdvantage="0" Damage="70" Stun="100">
+    <Move Name="TC 2MP 6HK" Startup="6" Recovery="23" BlockAdvantage="-5" HitAdvantage="0" Damage="130" Stun="200">
         <Types>
             <Basic/>
             <TargetCombo/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="TC 5MP 6MK" Startup="5" Recovery="16" BlockAdvantage="-2" HitAdvantage="6" Damage="70" Stun="100">
+    <Move Name="TC 5MP 6MK" Startup="5" Recovery="16" BlockAdvantage="-2" HitAdvantage="6" Damage="130" Stun="200">
         <Types>
             <Basic/>
             <TargetCombo/>
@@ -247,14 +247,14 @@
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="TC 8LP 8MK" Startup="3" Recovery="3" BlockAdvantage="3" HitAdvantage="6" Damage="70" Stun="50">
+    <Move Name="TC 8LP 8MK" Startup="3" Recovery="3" BlockAdvantage="3" HitAdvantage="6" Damage="110" Stun="120">
         <Types>
             <Air/>
             <TargetCombo/>
         </Types>
         <Cancels/>
     </Move>
-    <Move Name="TC 8HP 8HK" Startup="9" Recovery="9" BlockAdvantage="9" HitAdvantage="12" Damage="70" Stun="50">
+    <Move Name="TC 8HP 8HK" Startup="9" Recovery="9" BlockAdvantage="9" HitAdvantage="12" Damage="160" Stun="200">
         <Types>
             <Air/>
             <TargetCombo/>
